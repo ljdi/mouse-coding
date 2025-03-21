@@ -1,58 +1,23 @@
-# Turborepo Tailwind CSS starter
+## 依赖包
 
-This Turborepo starter is maintained by the Turborepo core team.
+- tab 页：react-tabs
+- html 元素树：react-complex-tree
+- html 和 css 属性面板表单数据：使用 @webref/elements @webref/css @webref/idl @mdn/browser-compat-data (mdn-data 仓库说快要弃用了 2025-03-04)
+  - [LATER] tailwindcss 类列表
+- [LATER] js 流程：@xyflow/react
+- [LATER] js 属性展示：react-json-tree
+- [LATER] 获取错误堆栈：Error 实例的 stack 属性或者使用 stacktrace-parser 库
 
-## Using this example
+## 功能点
 
-Run the following command:
-
-```sh
-npx create-turbo@latest -e with-tailwind
-```
-
-## What's inside?
-
-This Turborepo includes the following packages/apps:
-
-### Apps and Packages
-
-- `docs`: a [Next.js](https://nextjs.org/) app with [Tailwind CSS](https://tailwindcss.com/)
-- `web`: another [Next.js](https://nextjs.org/) app with [Tailwind CSS](https://tailwindcss.com/)
-- `ui`: a stub React component library with [Tailwind CSS](https://tailwindcss.com/) shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
-
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Building packages/ui
-
-This example is set up to produce compiled styles for `ui` components into the `dist` directory. The component `.tsx` files are consumed by the Next.js apps directly using `transpilePackages` in `next.config.ts`. This was chosen for several reasons:
-
-- Make sharing one `tailwind.config.ts` to apps and packages as easy as possible.
-- Make package compilation simple by only depending on the Next.js Compiler and `tailwindcss`.
-- Ensure Tailwind classes do not overwrite each other. The `ui` package uses a `ui-` prefix for it's classes.
-- Maintain clear package export boundaries.
-
-Another option is to consume `packages/ui` directly from source without building. If using this option, you will need to update the `tailwind.config.ts` in your apps to be aware of your package locations, so it can find all usages of the `tailwindcss` class names for CSS compilation.
-
-For example, in [tailwind.config.ts](packages/tailwind-config/tailwind.config.ts):
-
-```js
-  content: [
-    // app content
-    `src/**/*.{js,ts,jsx,tsx}`,
-    // include packages if not transpiling
-    "../../packages/ui/*.{js,ts,jsx,tsx}",
-  ],
-```
-
-If you choose this strategy, you can remove the `tailwindcss` and `autoprefixer` dependencies from the `ui` package.
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [Tailwind CSS](https://tailwindcss.com/) for styles
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
+- tab页
+- html js css 可视化编辑器
+  - html 元素树
+    - 选中的元素使用面包屑展示父级元素列表
+  - html 元素属性编辑
+    - 根据选中的元素展示可选属性列表
+    - 根据选中的元素展示可选事件列表
+  - css 属性编辑
+    - 根据选择的css属性选择可选的值
+  - js 代码编辑
+    - 使用流程图可视化展示代码流程

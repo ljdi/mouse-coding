@@ -3,16 +3,13 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@repo/ui/*": [
+      "@repo/shared/*": [
         "src/*"
       ]
-    },
-    "outDir": "dist",
-    "rootDir": "src"
+    }
   },
   "include": [
-    "**/*.ts",
-    "**/*.tsx"
+    "src"
   ],
   "exclude": [
     "node_modules",
