@@ -1,0 +1,5 @@
+{
+  "exclude": ["node_modules"],
+  "extends": "@mc/config/typescript/base.json",
+  "include": ["src"]
+}
