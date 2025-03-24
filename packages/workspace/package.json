@@ -1,0 +1,25 @@
+{
+  "name": "@mc/workspace",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./*": "./src/*.ts",
+    "./constants/*": "./src/constants/*.ts"
+  },
+  "scripts": {
+    "check-types": "tsc --noEmit",
+    "lint": "eslint ./src --max-warnings 0",
+    "lint:fix": "eslint ./src --fix",
+    "lint-staged": "lint-staged --concurrent false"
+  },
+  "dependencies": {
+    "@mc/shared": "*",
+    "@zenfs/core": "^2.0.0",
+    "@zenfs/dom": "^1.1.6"
+  },
+  "devDependencies": {
+    "@mc/config": "*"
+  }
+}

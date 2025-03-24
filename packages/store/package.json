@@ -1,0 +1,25 @@
+{
+  "name": "@mc/store",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./providers/*": "./src/providers/*.tsx",
+    "./slices/*": "./src/slices/*.ts"
+  },
+  "scripts": {
+    "check-types": "tsc --noEmit",
+    "lint": "eslint ./src --max-warnings 0",
+    "lint-staged": "lint-staged --concurrent false",
+    "lint:fix": "eslint ./src --fix"
+  },
+  "dependencies": {
+    "@mc/shared": "*",
+    "@mc/workspace": "*",
+    "zustand": "^5.0.3"
+  },
+  "devDependencies": {
+    "@mc/config": "*"
+  }
+}

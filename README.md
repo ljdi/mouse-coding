@@ -3,10 +3,10 @@
 - tab 页：react-tabs
 - html 元素树：react-complex-tree
 - html 和 css 属性面板表单数据：使用 @webref/elements @webref/css @webref/idl @mdn/browser-compat-data (mdn-data 仓库说快要弃用了 2025-03-04)
-  - [LATER] tailwindcss 类列表
-- [LATER] js 流程：@xyflow/react
-- [LATER] js 属性展示：react-json-tree
-- [LATER] 获取错误堆栈：Error 实例的 stack 属性或者使用 stacktrace-parser 库
+  - *LATER* tailwindcss 类列表
+- *LATER* js 流程：@xyflow/react
+- *LATER* js 属性展示：react-json-tree
+- *LATER* 获取错误堆栈：Error 实例的 stack 属性或者使用 stacktrace-parser 库
 
 ## 功能点
 

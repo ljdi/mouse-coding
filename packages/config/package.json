@@ -1,34 +1,45 @@
 {
-  "name": "@repo/config",
-  "version": "0.0.1",
+  "name": "@mc/config",
+  "version": "0.0.0",
+  "private": true,
   "type": "module",
   "exports": {
-    "./typescript/*": "./typescript/*",
-    "./eslint/*": "./eslint/*"
+    "./eslint": "./eslint/index.js",
+    "./eslint/*": "./eslint/*.js",
+    "./lint-staged": "./lint-staged/index.js",
+    "./lint-staged/nextjs": "./lint-staged/nextjs.js",
+    "./postcss": "./postcss/index.js",
+    "./prettier": "./prettier/index.js",
+    "./typescript/*": "./typescript/*"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "check-types": "tsc --noEmit",
+    "lint": "eslint . --max-warnings 0",
+    "lint-staged": "lint-staged --concurrent false",
+    "lint:fix": "eslint . --max-warnings 0 --fix"
   },
-  "devDependencies": {
-    "@eslint/js": "^9.22.0",
-    "@next/eslint-plugin-next": "^15.2.1",
-    "eslint": "^9.22.0",
-    "eslint-config-prettier": "^10.1.1",
-    "eslint-import-resolver-typescript": "^4.2.2",
-    "eslint-plugin-import": "^2.31.0",
+  "peerDependencies": {
+    "@eslint/css": "^0.5.0",
+    "@eslint/json": "^0.11.0",
+    "@eslint/markdown": "^6.3.0",
+    "@next/eslint-plugin-next": "^15.2.3",
+    "@stylistic/eslint-plugin": "^2.11.0",
+    "@tailwindcss/postcss": "^4.0.15",
+    "@typescript-eslint/eslint-plugin": "^8.27.0",
+    "@typescript-eslint/parser": "^8.27.0",
+    "eslint": "^9.23.0",
     "eslint-plugin-only-warn": "^1.1.0",
     "eslint-plugin-react": "^7.37.4",
     "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-tailwindcss": "^3.18.0",
     "eslint-plugin-turbo": "^2.4.4",
-    "globals": "^16.0.0",
+    "globals": "^15.15.0",
+    "lint-staged": "^15.5.0",
+    "postcss": "^8.5.3",
+    "prettier": "^3.5.3",
+    "prettier-plugin-sort-json": "^4.1.1",
+    "prettier-plugin-tailwindcss": "^0.6.11",
     "typescript": "^5.8.2",
-    "typescript-eslint": "^8.26.0"
-  },
-  "peerDependencies": {
-    "eslint": "^9.22.0",
-    "typescript": "^5.8.2",
-    "eslint-import-resolver-typescript": "^4.2.2",
-    "eslint-plugin-import": "^2.31.0",
-    "eslint-plugin-react": "^7.37.4"
+    "typescript-eslint": "^8.27.0"
   }
 }
