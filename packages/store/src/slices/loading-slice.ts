@@ -29,7 +29,7 @@ export const createLoadingSlice: StateCreator<LoadingSlice> = (set, get) => ({
     set(state => ({
       counters: {
         ...state.counters,
-        [key]: (state.counters[key] ?? 0) - 1,
+        [key]: Math.max((state.counters[key] ?? 0) - 1, 0),
       },
       instances: {
         ...state.instances,
