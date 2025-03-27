@@ -79,6 +79,9 @@ export const createWorkspaceSlice: StateCreator<WorkspaceSlice> = (
   renameWorkspace: async (newName: string) => {
     const workspacePath = await get().getWorkspacePath()
     const newPath = path.join(WORKSPACES_PATH, newName)
+    if (await fs.exists(newPath)) {
+      throw Error('A workspace with this name already exists.')
+    }
     await fs.rename(workspacePath, newPath)
   },
 })
