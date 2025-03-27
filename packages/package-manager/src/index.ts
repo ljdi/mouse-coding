@@ -27,7 +27,7 @@ export class Config implements ConfigData {
   }
 
   private async readConfigDataFromFile() {
-    let config: Partial<Config> = {}
+    let config: Partial<ConfigData> = {}
     if (await fs.exists(PM_CONFIG_FILE_PATH)) {
       const fileContent = await fs.readFile(PM_CONFIG_FILE_PATH)
       config = JSON.parse(fileContent.toString()) as Partial<ConfigData>
