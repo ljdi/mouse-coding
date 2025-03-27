@@ -15,5 +15,9 @@
   },
   "devDependencies": {
     "@mc/config": "*"
+  },
+  "dependencies": {
+    "@mc/shared": "^0.0.0",
+    "@zenfs/core": "^2.0.0"
   }
 }

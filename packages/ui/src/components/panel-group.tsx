@@ -1,6 +1,5 @@
 'use client'
 
-import { useStore } from '@mc/store'
 import {
   ResizableHandle,
   ResizablePanel,
@@ -10,29 +9,28 @@ import { FC, Fragment, ReactNode } from 'react'
 
 interface PanelWrapperProps {
   direction?: 'horizontal' | 'vertical'
-  panelViews: ReactNode[]
+  defaultLayout: number[]
+  views: ReactNode[]
+  onLayout?: (sizes: number[]) => void
 }
 
 export const PanelGroup: FC<PanelWrapperProps> = ({
-  panelViews,
+  views,
   direction = 'horizontal',
+  defaultLayout,
+  onLayout,
 }) => {
-  const defaultLayout = useStore(state => state.defaultLayout)
-  const onLayout = (sizes: number[]) => {
-    document.cookie = `react-resizable-panels:layout=${JSON.stringify(sizes)}`
-  }
-
   return (
     <ResizablePanelGroup
       autoSaveId="playground"
       direction={direction}
       onLayout={onLayout}
     >
-      {panelViews.map((view, index) => (
+      {views.map((view, index) => (
         <Fragment key={index}>
           {index > 0 && <ResizableHandle />}
           <ResizablePanel
-            defaultSize={defaultLayout ? defaultLayout[index] : undefined}
+            defaultSize={defaultLayout[index]}
           >
             {view}
           </ResizablePanel>

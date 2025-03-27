@@ -8,11 +8,11 @@ import {
   createEditorSlice,
   type EditorSlice,
 } from '@mc/store/slices/editor-slice'
-import { createFsSlice, type FsSlice } from '@mc/store/slices/fs-slice'
 import {
   createLayoutSlice,
   type LayoutSlice,
 } from '@mc/store/slices/layout-slice'
+import { createLoadingSlice, LoadingSlice } from '@mc/store/slices/loading-slice'
 import {
   createWorkspaceSlice,
   type WorkspaceSlice,
@@ -26,13 +26,13 @@ export type StoreState = CounterSlice &
   DndSlice &
   EditorSlice &
   LayoutSlice &
-  FsSlice &
-  WorkspaceSlice
+  WorkspaceSlice &
+  LoadingSlice
 
 export type InitialState = Partial<{
   [K in keyof StoreState]: StoreState[K] extends (...args: unknown[]) => unknown
     ? never
-    : StoreState[K];
+    : StoreState[K]
 }>
 
 // 创建 store 工厂函数
@@ -44,8 +44,8 @@ export const createStore = (initialState: InitialState = {}) => {
       ...createDndSlice(set, get, api),
       ...createEditorSlice(set, get, api),
       ...createLayoutSlice(set, get, api),
-      ...createFsSlice(set, get, api),
       ...createWorkspaceSlice(set, get, api),
+      ...createLoadingSlice(set, get, api),
       ...initialState,
     }
   })

@@ -1,5 +1,5 @@
 'use client'
 
-export const CssEditor = () => {
+export const EditorViewCss = () => {
   return <div>css-tree</div>
 }
