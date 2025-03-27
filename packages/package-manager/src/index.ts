@@ -23,7 +23,7 @@ export class Config implements ConfigData {
   }
 
   get registry() {
-    return this.data.registry || DEFAULT_REGISTRY_URL
+    return this.data.registry ?? DEFAULT_REGISTRY_URL
   }
 
   private async readConfigDataFromFile() {
