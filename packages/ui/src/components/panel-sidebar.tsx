@@ -1,12 +1,8 @@
 'use client'
 
-import { SiGit } from '@icons-pack/react-simple-icons'
 import { SidebarViewId } from '@mc/shared/constants/sidebar'
-import { type SidebarView } from '@mc/shared/types/sidebar'
-import { SidebarViewFiles } from '@mc/ui/components/sidebar-view-files'
-import { SidebarViewGit } from '@mc/ui/components/sidebar-view-git'
-import { SidebarViewPackages } from '@mc/ui/components/sidebar-view-packages'
-import { SidebarViewSearch } from '@mc/ui/components/sidebar-view-search'
+import { type SidebarView } from '@mc/shared/types/view'
+import { useStore } from '@mc/store'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@mc/ui/shadcn/tabs'
 import {
   Tooltip,
@@ -14,17 +10,17 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@mc/ui/shadcn/tooltip'
-import { Files, Package, Search } from 'lucide-react'
-import { type FC, useState } from 'react'
+import { PanelLeftClose, PanelLeftOpen } from 'lucide-react'
+import { type FC } from 'react'
 
 interface ActivityBarProps {
   views: SidebarView[]
   onChange?: (id: SidebarViewId) => void
 }
 
-const ActivityBar: FC<ActivityBarProps> = ({ views: items, onChange }) => (
+const ActivityBar: FC<ActivityBarProps> = ({ views, onChange }) => (
   <TabsList className="bg-transparent">
-    {items.map(item => (
+    {views.map(item => (
       <TabsTrigger
         key={item.id}
         value={String(item.id)}
@@ -34,7 +30,7 @@ const ActivityBar: FC<ActivityBarProps> = ({ views: items, onChange }) => (
           <Tooltip>
             <TooltipTrigger asChild>{item.icon}</TooltipTrigger>
             <TooltipContent>
-              <p>{item.label}</p>
+              <p>{item.name}</p>
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
@@ -47,14 +43,14 @@ interface SidebarViewsProps {
   views: SidebarView[]
 }
 
-export const ViewContent: FC<SidebarViewsProps> = ({ views }) => {
+export const ActivityContent: FC<SidebarViewsProps> = ({ views }) => {
   return (
     <>
       {views.map(view => (
         <TabsContent key={view.id} value={String(view.id)}>
           <div className="h-full overflow-y-auto">
             <div className="flex items-center justify-between px-3 py-2">
-              <h2 className="text-sm font-semibold">{view.label}</h2>
+              <h2 className="text-sm font-semibold">{view.name}</h2>
             </div>
             <div className="p-2">{view.component}</div>
           </div>
@@ -64,35 +60,11 @@ export const ViewContent: FC<SidebarViewsProps> = ({ views }) => {
   )
 }
 
-// interface PanelSidebarProps {}
+interface PanelSidebarProps {
+  views: SidebarView[]
+}
 
-export const PanelSidebar /* : FC<PanelSidebarProps> */ = () => {
-  const [viewItems] = useState<SidebarView[]>([
-    {
-      id: SidebarViewId.FILES,
-      icon: <Files />,
-      label: 'Files',
-      component: <SidebarViewFiles />,
-    },
-    {
-      id: SidebarViewId.SEARCH,
-      icon: <Search />,
-      label: 'Search',
-      component: <SidebarViewSearch />,
-    },
-    {
-      id: SidebarViewId.GIT,
-      icon: <SiGit />,
-      label: 'Git',
-      component: <SidebarViewGit />,
-    },
-    {
-      id: SidebarViewId.PACKAGES,
-      icon: <Package />,
-      label: 'Packages',
-      component: <SidebarViewPackages />,
-    },
-  ])
+export const PanelSidebar: FC<PanelSidebarProps> = ({ views }) => {
   // const [activeView, setActiveView] = useState<SidebarViewId>(
   //   SidebarViewId.FILES,
   // )
@@ -100,47 +72,27 @@ export const PanelSidebar /* : FC<PanelSidebarProps> */ = () => {
   return (
     <>
       <Tabs
-        defaultValue={String(viewItems.at(0)?.id ?? SidebarViewId.FILES)}
+        defaultValue={String(views.at(0)?.id ?? SidebarViewId.FILES)}
         className="h-full"
       >
-        <ActivityBar views={viewItems} />
-        <ViewContent views={viewItems} />
+        <ActivityBar views={views} />
+        <ActivityContent views={views} />
       </Tabs>
     </>
   )
 }
 
-/* const useMinSize = (minSizeInPixels: number) => {
-  const [minSize, setMinSize] = useState(10);
+export const SidebarController = () => {
+  const isPrimarySidebarCollapsed = useStore(
+    state => state.isPrimarySidebarCollapsed,
+  )
+  const togglePrimarySidebar = useStore(state => state.togglePrimarySidebar)
 
-  useLayoutEffect(() => {
-    const resizablePanelGroup = document.querySelector<HTMLDivElement>(
-      '[data-panel-group-id="playground-layout"]',
-    );
-    const resizableHandles = document.querySelectorAll<HTMLDivElement>(
-      "[data-panel-resize-handle-id]",
-    );
-    if (!resizablePanelGroup) return;
-    const observer = new ResizeObserver(() => {
-      let width = resizablePanelGroup.offsetWidth || 0;
-
-      resizableHandles.forEach((resizeHandle) => {
-        width -= resizeHandle.offsetWidth;
-      });
-
-      // Minimum size in pixels is a percentage of the PanelGroup's height,
-      // less the (fixed) height of the resize handles.
-      setMinSize((minSizeInPixels / width) * 100);
-    });
-    observer.observe(resizablePanelGroup);
-    resizableHandles.forEach((resizeHandle) => {
-      observer.observe(resizeHandle);
-    });
-
-    return () => {
-      observer.disconnect();
-    };
-  }, []);
-
-  return minSize;
-}; */
+  return isPrimarySidebarCollapsed
+    ? (
+        <PanelLeftClose onClick={togglePrimarySidebar} />
+      )
+    : (
+        <PanelLeftOpen onClick={togglePrimarySidebar} />
+      )
+}

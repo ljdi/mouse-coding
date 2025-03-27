@@ -6,7 +6,8 @@
   "exports": {
     ".": "./src/index.ts",
     "./providers/*": "./src/providers/*.tsx",
-    "./slices/*": "./src/slices/*.ts"
+    "./slices/*": "./src/slices/*.ts",
+    "./utils/*": "./src/utils/*.ts"
   },
   "scripts": {
     "check-types": "tsc --noEmit",
@@ -16,7 +17,8 @@
   },
   "dependencies": {
     "@mc/shared": "*",
-    "@mc/workspace": "*",
+    "radash": "^12.1.0",
+    "react-complex-tree": "^2.6.0",
     "zustand": "^5.0.3"
   },
   "devDependencies": {

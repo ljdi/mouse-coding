@@ -1,5 +1,5 @@
 'use client'
 
-export const HtmlEditor = () => {
+export const EditorViewHtml = () => {
   return <div>html-tree</div>
 }
