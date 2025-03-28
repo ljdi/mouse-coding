@@ -3,6 +3,7 @@
 import { SidebarViewId } from '@mc/shared/constants/sidebar'
 import { type SidebarView } from '@mc/shared/types/view'
 import { useStore } from '@mc/store'
+import { Button } from '@mc/ui/shadcn/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@mc/ui/shadcn/tabs'
 import {
   Tooltip,
@@ -84,15 +85,13 @@ export const SideBar: FC<PanelSidebarProps> = ({ views }) => {
 
 export const SidebarController = () => {
   const isPrimarySidebarCollapsed = useStore(
-    state => state.isPrimarySidebarCollapsed,
+    state => state.isPrimarySideBarCollapsed,
   )
-  const togglePrimarySidebar = useStore(state => state.togglePrimarySidebar)
+  const togglePrimarySidebar = useStore(state => state.togglePrimarySideBar)
 
-  return isPrimarySidebarCollapsed
-    ? (
-        <PanelLeftClose onClick={togglePrimarySidebar} />
-      )
-    : (
-        <PanelLeftOpen onClick={togglePrimarySidebar} />
-      )
+  return (
+    <Button variant="ghost" size="icon" onClick={togglePrimarySidebar}>
+      {isPrimarySidebarCollapsed ? <PanelLeftClose /> : <PanelLeftOpen />}
+    </Button>
+  )
 }

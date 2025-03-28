@@ -1,14 +1,14 @@
 'use client'
 
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
+import { Avatar, AvatarFallback, AvatarImage } from '@mc/ui/shadcn/avatar'
+import { Badge } from '@mc/ui/shadcn/badge'
+import { Button } from '@mc/ui/shadcn/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
+} from '@mc/ui/shadcn/dropdown-menu'
 import { Bell, ChevronDown, Triangle } from 'lucide-react'
 import Link from 'next/link'
 

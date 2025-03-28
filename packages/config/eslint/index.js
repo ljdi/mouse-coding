@@ -6,6 +6,7 @@ import markdown from '@eslint/markdown'
 import stylistic from '@stylistic/eslint-plugin'
 import onlyWarn from 'eslint-plugin-only-warn'
 // import tailwind from 'eslint-plugin-tailwindcss'
+import importPlugin from 'eslint-plugin-import'
 import turbo from 'eslint-plugin-turbo'
 import ts from 'typescript-eslint'
 
@@ -32,7 +33,11 @@ export default [
     ...conf,
     files: ['**/*.ts', '**/*.tsx'],
   })),
-
+  {
+    files: ['**/*.{ts,tsx}'],
+    ...importPlugin.flatConfigs.recommended,
+    ...importPlugin.flatConfigs.typescript,
+  },
   // CSS
   {
     files: ['**/*.css'],

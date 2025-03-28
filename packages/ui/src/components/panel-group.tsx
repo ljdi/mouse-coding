@@ -9,7 +9,7 @@ import { FC, Fragment, ReactNode } from 'react'
 
 interface PanelWrapperProps {
   direction?: 'horizontal' | 'vertical'
-  defaultLayout: number[]
+  defaultSize?: number[]
   views: ReactNode[]
   onLayout?: (sizes: number[]) => void
 }
@@ -17,7 +17,7 @@ interface PanelWrapperProps {
 export const PanelGroup: FC<PanelWrapperProps> = ({
   views,
   direction = 'horizontal',
-  defaultLayout,
+  defaultSize,
   onLayout,
 }) => {
   return (
@@ -26,14 +26,17 @@ export const PanelGroup: FC<PanelWrapperProps> = ({
       direction={direction}
       onLayout={onLayout}
     >
-      {views.map((view, index) => (
-        <Fragment key={index}>
-          {index > 0 && <ResizableHandle className="w-0 after:w-0" />}
-          <ResizablePanel defaultSize={defaultLayout[index]}>
-            {view}
-          </ResizablePanel>
-        </Fragment>
-      ))}
+      {views.map(
+        (view, index) =>
+          view && (
+            <Fragment key={index}>
+              {index > 0 && <ResizableHandle className="w-0 after:w-0" />}
+              <ResizablePanel defaultSize={defaultSize?.[index]}>
+                {view}
+              </ResizablePanel>
+            </Fragment>
+          ),
+      )}
     </ResizablePanelGroup>
   )
 }

@@ -10,7 +10,7 @@ import base from './index.js'
 export default [
   ...base,
   {
-    files: ['**/*.tsx'],
+    files: ['**/*.{js,mjs,cjs,jsx,mjsx,ts,tsx,mtsx}'],
     ...pluginReact.configs.flat.recommended,
     languageOptions: {
       ...pluginReact.configs.flat.recommended.languageOptions,

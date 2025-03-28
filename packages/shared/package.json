@@ -22,5 +22,8 @@
     "@zenfs/core": "^2.0.0",
     "@zenfs/dom": "^1.1.6",
     "typescript": "^5.8.2"
+  },
+  "dependencies": {
+    "next": "^15.2.4"
   }
 }
