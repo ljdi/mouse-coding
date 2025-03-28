@@ -7,7 +7,10 @@
     "./constants/*": "./src/constants/*.ts",
     "./hooks/*": "./src/hooks/*.ts",
     "./types/*": "./src/types/*.ts",
-    "./utils": "./src/utils/index.ts"
+    "./lib/*": "./src/lib/*.ts",
+    "./utils": "./src/utils/index.ts",
+    "./utils/*": "./src/utils/*.ts"
+
   },
   "scripts": {
     "check-types": "tsc --noEmit",
@@ -16,6 +19,9 @@
     "lint:fix": "eslint ./src --fix"
   },
   "devDependencies": {
-    "@mc/config": "*"
+    "@mc/config": "*",
+    "@zenfs/core": "^2.0.0",
+    "@zenfs/dom": "^1.1.6",
+    "typescript": "^5.8.2"
   }
 }

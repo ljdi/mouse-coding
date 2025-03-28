@@ -1,5 +1,5 @@
 import { LoadingKey } from '@mc/shared/constants/loading'
-import { generateId } from '@mc/shared/utils'
+import { generateUUID } from '@mc/shared/utils/crypto'
 import { useStore } from '@mc/store'
 
 export const useLoading = <T extends unknown[], R>(
@@ -9,7 +9,7 @@ export const useLoading = <T extends unknown[], R>(
   const addInstance = useStore(state => state.addInstance)
   const removeInstance = useStore(state => state.removeInstance)
   return async (...args: T): Promise<R> => {
-    const instanceId = generateId() // 为每次调用生成唯一 ID
+    const instanceId = generateUUID() // 为每次调用生成 UUID
     addInstance(key, instanceId)
     try {
       return await asyncFunc(...args)

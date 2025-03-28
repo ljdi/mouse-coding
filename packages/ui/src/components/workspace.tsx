@@ -1,6 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { LoadingKey } from '@mc/shared/constants/loading'
 import { useLoading } from '@mc/shared/hooks/useLoading'
+import { getWorkspaceNames } from '@mc/shared/lib/workspace'
 import { useStore } from '@mc/store'
 import { cn } from '@mc/ui/lib/utils'
 import { Button } from '@mc/ui/shadcn/button'
@@ -154,16 +155,15 @@ export function WorkspaceSelector() {
   const [workspaceNames, setWorkspaceNames] = useState<string[]>([])
   const [inputWorkspaceName, setInputWorkspaceName] = useState('')
 
-  const activeWorkspaceName = useStore(state => state.activeWorkspaceName)
-  const getWorkspaceNames = useStore(state => state.getWorkspaceNames)
+  const activeWorkspaceName = useStore(state => state.selectedWorkspaceName)
   const selectWorkspace = useStore(state => state.selectWorkspace)
-  const workspaceInitialized = useStore(state => state.workspaceInitialized)
+  const workspaceInitialized = useStore(state => state.workspacesAreReady)
 
   useEffect(() => {
     if (workspaceInitialized) {
       getWorkspaceNames().then(setWorkspaceNames).catch(console.error)
     }
-  }, [open, getWorkspaceNames, workspaceInitialized])
+  }, [open, workspaceInitialized])
 
   const handleSelectWorkspace = (workspaceName: string) => {
     if (workspaceName !== activeWorkspaceName) {

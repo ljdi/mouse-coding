@@ -19,18 +19,18 @@ interface ActivityBarProps {
 }
 
 const ActivityBar: FC<ActivityBarProps> = ({ views, onChange }) => (
-  <TabsList className="bg-transparent">
-    {views.map(item => (
+  <TabsList className="h-10 rounded-none bg-neutral-100 dark:bg-neutral-900">
+    {views.map(view => (
       <TabsTrigger
-        key={item.id}
-        value={String(item.id)}
-        onClick={() => onChange?.(item.id)}
+        key={view.id}
+        value={String(view.id)}
+        onClick={() => onChange?.(view.id)}
       >
         <TooltipProvider>
           <Tooltip>
-            <TooltipTrigger asChild>{item.icon}</TooltipTrigger>
+            <TooltipTrigger asChild>{view.icon}</TooltipTrigger>
             <TooltipContent>
-              <p>{item.name}</p>
+              <p>{view.name}</p>
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
@@ -64,7 +64,7 @@ interface PanelSidebarProps {
   views: SidebarView[]
 }
 
-export const PanelSidebar: FC<PanelSidebarProps> = ({ views }) => {
+export const SideBar: FC<PanelSidebarProps> = ({ views }) => {
   // const [activeView, setActiveView] = useState<SidebarViewId>(
   //   SidebarViewId.FILES,
   // )
@@ -73,7 +73,7 @@ export const PanelSidebar: FC<PanelSidebarProps> = ({ views }) => {
     <>
       <Tabs
         defaultValue={String(views.at(0)?.id ?? SidebarViewId.FILES)}
-        className="h-full"
+        className="h-full bg-neutral-100 dark:bg-neutral-900"
       >
         <ActivityBar views={views} />
         <ActivityContent views={views} />

@@ -8,9 +8,6 @@ export const getKeyFromEnum = <V extends string | number>(
   return Object.keys(enumType).find(key => enumType[key] === value)
 }
 
-export const generateId = () => Math.random().toString(36).slice(2)
-
-export const isClient = () => typeof window === 'object'
 export const isObject = (obj?: unknown) =>
   obj ? typeof obj === 'object' : false
 export const { isArray } = Array

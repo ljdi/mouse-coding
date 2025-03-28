@@ -1,6 +1,6 @@
 'use client'
 
-import { WORKSPACES_PATH } from '@mc/shared/constants/workspace'
+import { WORKSPACES_PATH } from '@mc/shared/constants/fs'
 import { FC, useState } from 'react'
 import {
   ControlledTreeEnvironment,
