@@ -3,13 +3,18 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import { Bell, ChevronDown, Triangle } from 'lucide-react'
 import Link from 'next/link'
 
 export function TopNav() {
   return (
-    <div className="flex h-14 items-center justify-between border-b border-border px-4">
+    <div className="border-border flex h-14 items-center justify-between border-b px-4">
       <div className="flex items-center space-x-4">
         <Link href="#" className="flex items-center space-x-2">
           <Triangle className="h-5 w-5" />
@@ -18,7 +23,7 @@ export function TopNav() {
         <div className="flex items-center space-x-2">
           <Badge
             variant="outline"
-            className="bg-emerald-500/20 text-emerald-500 border-emerald-500/20 h-5 w-5 rounded-full p-0"
+            className="h-5 w-5 rounded-full border-emerald-500/20 bg-emerald-500/20 p-0 text-emerald-500"
           />
           <span className="text-sm font-medium">团队的项目</span>
           <Badge variant="outline" className="text-xs">

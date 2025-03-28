@@ -1,1 +1,8 @@
-export { default } from '@mc/config/eslint/react'
+import config from '@mc/config/eslint/react'
+
+export default [
+  ...config,
+  {
+    ignores: ['src/shadcn'],
+  },
+]

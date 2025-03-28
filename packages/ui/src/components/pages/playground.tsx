@@ -9,7 +9,7 @@ import {
 } from '@icons-pack/react-simple-icons'
 import { EditorMode } from '@mc/shared/constants/editor'
 import { SidebarViewId } from '@mc/shared/constants/sidebar'
-import { initializeWorkspaces } from '@mc/shared/lib/workspace'
+import { Workspace } from '@mc/shared/lib/workspace'
 import { EditorView, SidebarView } from '@mc/shared/types/view'
 import { useStore } from '@mc/store'
 import { EditorViewCss } from '@mc/ui/components/css-editor'
@@ -32,7 +32,7 @@ export const PlaygroundPage = () => {
 
   useEffect(() => {
     if (!workspacesAreReady) {
-      initializeWorkspaces().then(setWorkspacesReady).catch(console.error)
+      Workspace.mount().then(setWorkspacesReady).catch(console.error)
     }
   }, [workspacesAreReady, setWorkspacesReady])
 

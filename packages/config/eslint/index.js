@@ -11,7 +11,7 @@ import ts from 'typescript-eslint'
 
 /** @type {import("eslint").Linter.Config} */
 export default [
-  js.configs.recommended,
+  { ...js.configs.recommended, files: ['**/*.js'] },
 
   // TypeScript
   ...[
@@ -19,18 +19,19 @@ export default [
     ...ts.configs.strictTypeChecked,
     ...ts.configs.stylisticTypeChecked,
     stylistic.configs['recommended-flat'],
+    {
+      name: 'tsconfigRootDir',
+      languageOptions: {
+        parserOptions: {
+          projectService: true,
+          tsconfigRootDir: import.meta.dirname,
+        },
+      },
+    },
   ].map((conf) => ({
     ...conf,
     files: ['**/*.ts', '**/*.tsx'],
   })),
-  {
-    languageOptions: {
-      parserOptions: {
-        projectService: true,
-        tsconfigRootDir: import.meta.dirname,
-      },
-    },
-  },
 
   // CSS
   {

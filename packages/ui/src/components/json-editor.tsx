@@ -1,7 +1,3 @@
 export const EditorViewJson = () => {
-  return (
-    <div>
-      editor-view-json
-    </div>
-  )
+  return <div>editor-view-json</div>
 }

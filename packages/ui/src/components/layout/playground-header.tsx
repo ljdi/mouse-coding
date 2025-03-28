@@ -25,13 +25,25 @@ function ModeToggle() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => { setTheme('light') }}>
+        <DropdownMenuItem
+          onClick={() => {
+            setTheme('light')
+          }}
+        >
           Light
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => { setTheme('dark') }}>
+        <DropdownMenuItem
+          onClick={() => {
+            setTheme('dark')
+          }}
+        >
           Dark
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => { setTheme('system') }}>
+        <DropdownMenuItem
+          onClick={() => {
+            setTheme('system')
+          }}
+        >
           System
         </DropdownMenuItem>
       </DropdownMenuContent>
@@ -41,12 +53,12 @@ function ModeToggle() {
 
 export const PlaygroundHeader = () => {
   return (
-    <header className="flex h-14 items-center justify-between bg-neutral-50 dark:bg-neutral-950 px-4">
+    <header className="flex h-14 items-center justify-between bg-neutral-50 px-4 dark:bg-neutral-950">
       <div className="my-8 flex items-center space-x-4">
         <Mouse className="text-neutral-950 dark:text-neutral-50" />
-      </div>
-      <div className="flex items-center space-x-2">
         <WorkspaceSelector />
+      </div>
+      <div className="flex items-center space-x-4">
         <SidebarController />
         <ModeToggle />
       </div>

@@ -2,7 +2,6 @@ import {
   DEFAULT_REGISTRY_URL,
   PACKAGE_JSON_FILE_NAME,
   PM_CONFIG_FILE_PATH,
-  PM_CONFIG_PATH,
 } from '@mc/shared/constants/fs'
 import * as path from '@zenfs/core/path.js'
 import * as fs from '@zenfs/core/promises'
@@ -36,8 +35,9 @@ export class Config implements ConfigData {
   }
 
   private async writeConfigDataToFile(config: Partial<ConfigData>) {
-    if (!(await fs.exists(PM_CONFIG_PATH))) {
-      await fs.mkdir(PM_CONFIG_PATH, { recursive: true })
+    const configDir = path.dirname(PM_CONFIG_FILE_PATH)
+    if (!(await fs.exists(configDir))) {
+      await fs.mkdir(configDir, { recursive: true })
     }
     await fs.writeFile(PM_CONFIG_FILE_PATH, JSON.stringify(config))
   }
@@ -48,13 +48,16 @@ export class PackageManager {
   constructor(public cwd: string) {}
 
   public async init() {
-    if (await fs.exists(path.join(this.cwd, PACKAGE_JSON_FILE_NAME))) {
+    const packageJsonPath = path.join(this.cwd, PACKAGE_JSON_FILE_NAME)
+    if (await fs.exists(packageJsonPath)) {
       throw Error('Project already initialized')
     }
     await fs.writeFile(
-      PACKAGE_JSON_FILE_NAME,
+      packageJsonPath,
       JSON.stringify({ name: path.basename(this.cwd), private: true }),
     )
+    await fs.mkdir(path.join(this.cwd, 'src/test'), { recursive: true })
+    await fs.mkdir(path.join(this.cwd, 'public'), { recursive: true })
   }
 
   public install(packageName: string) {

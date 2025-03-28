@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { LoadingKey } from '@mc/shared/constants/loading'
 import { useLoading } from '@mc/shared/hooks/useLoading'
-import { getWorkspaceNames } from '@mc/shared/lib/workspace'
+import { Workspace } from '@mc/shared/lib/workspace'
 import { useStore } from '@mc/store'
 import { cn } from '@mc/ui/lib/utils'
 import { Button } from '@mc/ui/shadcn/button'
@@ -41,7 +41,8 @@ import { z } from 'zod'
 interface WorkspaceCreateProps {
   trigger: React.ReactNode
   defaultValue: string
-  onOpenChange: (isOpen: boolean) => void
+  onClose: () => void
+  onSubmit: (workspaceName: string) => void
 }
 
 const formSchema = z.object({
@@ -58,13 +59,17 @@ const formSchema = z.object({
 export const WorkspaceCreate: FC<WorkspaceCreateProps> = ({
   trigger,
   defaultValue,
-  onOpenChange,
+  onClose,
+  onSubmit,
 }) => {
-  const createWorkspace = useStore(state => state.createWorkspace)
   const isLoading = useStore(state => state.isLoading)
   const createWorkspaceWithLoading = useLoading(
     LoadingKey.WORKSPACE_CREATING,
-    createWorkspace,
+    async (workspaceName: string) => {
+      const workspace = new Workspace(workspaceName)
+      await workspace.create()
+      await workspace.init()
+    },
   )
   const createWorkspaceIsLoading = isLoading(LoadingKey.WORKSPACE_CREATING)
 
@@ -80,8 +85,14 @@ export const WorkspaceCreate: FC<WorkspaceCreateProps> = ({
     form
       .handleSubmit(async ({ workspaceName }: z.infer<typeof formSchema>) => {
         await createWorkspaceWithLoading(workspaceName)
-        // setOpen(false) // 手动关闭不会触发 Dialog 的 onOpenChange 事件
-        onOpenChange(false)
+        onSubmit(workspaceName)
+
+        // TODO: 确定直接关闭是否因为组件卸载所以不会触发后续代码, 暂时使用 setTimeout
+        setTimeout(() => {
+          setOpen(false)
+        }, 0)
+        // 关闭 Dialog
+        onClose()
       })(e)
       .catch((error: unknown) => {
         form.setError('workspaceName', {
@@ -97,7 +108,9 @@ export const WorkspaceCreate: FC<WorkspaceCreateProps> = ({
   }
 
   const handleDialogOpenChange = (isOpen: boolean) => {
-    onOpenChange(isOpen)
+    if (!isOpen) {
+      onClose()
+    }
     setOpen(isOpen)
   }
 
@@ -160,8 +173,8 @@ export function WorkspaceSelector() {
   const workspaceInitialized = useStore(state => state.workspacesAreReady)
 
   useEffect(() => {
-    if (workspaceInitialized) {
-      getWorkspaceNames().then(setWorkspaceNames).catch(console.error)
+    if (workspaceInitialized && open) {
+      Workspace.getWorkspaceNames().then(setWorkspaceNames).catch(console.error)
     }
   }, [open, workspaceInitialized])
 
@@ -197,12 +210,12 @@ export function WorkspaceSelector() {
               <WorkspaceCreate
                 trigger={`Create ${inputWorkspaceName} workspace`}
                 defaultValue={inputWorkspaceName}
-                onOpenChange={(isOpen) => {
-                  console.log('-----', isOpen)
-                  setOpen(isOpen)
-                  if (!isOpen) {
-                    setInputWorkspaceName('')
-                  }
+                onClose={() => {
+                  setOpen(false)
+                  setInputWorkspaceName('')
+                }}
+                onSubmit={(workspaceName) => {
+                  handleSelectWorkspace(workspaceName)
                 }}
               />
             </CommandEmpty>
