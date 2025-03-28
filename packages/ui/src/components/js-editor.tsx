@@ -50,15 +50,15 @@ function transformAST(ast: ts.SourceFile): ts.SourceFile {
 }
 
 // 手动遍历和修改 修改AST
-function traverseAndModify(node: ts.Node) {
-  ts.forEachChild(node, (child) => {
-    // 处理特定节点类型
-    if (ts.isVariableDeclaration(child) && child.name.getText() === 'greet') {
-      // 修改节点逻辑
-    }
-    traverseAndModify(child)
-  })
-}
+// function traverseAndModify(node: ts.Node) {
+//   ts.forEachChild(node, (child) => {
+//     // 处理特定节点类型
+//     if (ts.isVariableDeclaration(child) && child.name.getText() === 'greet') {
+//       // 修改节点逻辑
+//     }
+//     traverseAndModify(child)
+//   })
+// }
 
 function generateCode(ast: ts.SourceFile): string {
   const printer = ts.createPrinter()

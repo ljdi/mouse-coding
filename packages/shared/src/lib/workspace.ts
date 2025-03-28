@@ -59,7 +59,7 @@ export const renameWorkspace = async (
 
 export class Workspace {
   public static root = WORKSPACES_PATH
-  public static mounted = false
+  public static isMounted = false
 
   private packageManager: PackageManager
 
@@ -82,11 +82,11 @@ export class Workspace {
     if (!(await fileSystemModule.exists(Workspace.root))) {
       await fileSystemModule.mkdir(Workspace.root, { recursive: true })
     }
-    Workspace.mounted = true
+    Workspace.isMounted = true
   }
 
   public static checkWorkspaceRootMounted() {
-    if (!Workspace.mounted) {
+    if (!Workspace.isMounted) {
       throw Error('Workspaces not mounted')
     }
   }

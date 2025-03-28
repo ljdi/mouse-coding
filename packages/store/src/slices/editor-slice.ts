@@ -1,26 +1,26 @@
-import { Editor } from '@mc/shared/types/editor'
+import { EditorView } from '@mc/shared/types/view'
 import { StateCreator } from 'zustand'
 
 export interface EditorSlice {
-  openEditors: Editor[]
-  focusedEditor: Editor | null
-  openEditor: (editor: Editor) => void
-  closeEditor: (editor: Editor) => void
+  openEditors: EditorView[]
+  focusedEditor: EditorView | null
+  openEditor: (editor: EditorView) => void
+  closeEditor: (editor: EditorView) => void
   closeAllEditors: () => void
-  closeOtherEditors: (editor: Editor) => void
-  setFocusedEditor: (editor: Editor | null) => void
+  closeOtherEditors: (editor: EditorView) => void
+  setFocusedEditor: (editor: EditorView | null) => void
 }
 
 export const createEditorSlice: StateCreator<EditorSlice> = set => ({
   openEditors: [],
   focusedEditor: null,
 
-  openEditor: (editor: Editor) => {
+  openEditor: (editor: EditorView) => {
     set(state => ({
       openEditors: [...state.openEditors, editor],
     }))
   },
-  closeEditor: (editor: Editor) => {
+  closeEditor: (editor: EditorView) => {
     set(state => ({
       openEditors: state.openEditors.filter(e => e !== editor),
     }))
@@ -28,12 +28,12 @@ export const createEditorSlice: StateCreator<EditorSlice> = set => ({
   closeAllEditors: () => {
     set({ openEditors: [] })
   },
-  closeOtherEditors: (editor: Editor) => {
+  closeOtherEditors: (editor: EditorView) => {
     set(() => ({
       openEditors: [editor],
     }))
   },
-  setFocusedEditor: (editor: Editor | null) => {
+  setFocusedEditor: (editor: EditorView | null) => {
     set({ focusedEditor: editor })
   },
 })

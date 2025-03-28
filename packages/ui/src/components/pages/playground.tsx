@@ -8,65 +8,28 @@ import {
   SiJson,
 } from '@icons-pack/react-simple-icons'
 import { EditorMode } from '@mc/shared/constants/editor'
+import { LayoutId } from '@mc/shared/constants/layout'
 import { SidebarViewId } from '@mc/shared/constants/sidebar'
-import { Workspace } from '@mc/shared/lib/workspace'
 import { EditorView, SidebarView } from '@mc/shared/types/view'
-import { useStore } from '@mc/store'
-import { EditorViewCss } from '@mc/ui/components/css-editor'
-import { EditorWithTabs } from '@mc/ui/components/editor-with-tabs'
+import { EditorViewCss } from '@mc/ui/components/editor'
 import { EditorViewHtml } from '@mc/ui/components/html-editor'
 import { EditorViewJs } from '@mc/ui/components/js-editor'
 import { EditorViewJson } from '@mc/ui/components/json-editor'
-import { PanelGroup } from '@mc/ui/components/panel-group'
+import { DefaultLayout } from '@mc/ui/components/layout/default'
 import { SideBar } from '@mc/ui/components/side-bar'
-import { SidebarViewFiles } from '@mc/ui/components/sidebar-view-files'
+import { FileTree } from '@mc/ui/components/sidebar-view-files'
 import { SidebarViewGit } from '@mc/ui/components/sidebar-view-git'
 import { SidebarViewPackages } from '@mc/ui/components/sidebar-view-packages'
 import { SidebarViewSearch } from '@mc/ui/components/sidebar-view-search'
+import { EditorWithTabs } from '@mc/ui/components/tabs'
 import { Files, Package, Search } from 'lucide-react'
-import { Suspense, useEffect, useState } from 'react'
+import { FC, Suspense, useState } from 'react'
 
-export const PlaygroundPage = () => {
-  const workspacesAreReady = useStore(state => state.workspacesAreReady)
-  const setWorkspacesReady = useStore(state => state.setWorkspacesReady)
-
-  useEffect(() => {
-    if (!workspacesAreReady) {
-      Workspace.mount().then(setWorkspacesReady).catch(console.error)
-    }
-  }, [workspacesAreReady, setWorkspacesReady])
-
-  const defaultLayout = useStore(state => state.defaultLayout)
-  const onLayout = (sizes: number[]) => {
-    document.cookie = `react-resizable-panels:layout=${JSON.stringify(sizes)}`
-  }
-
-  const [sidebarViews] = useState<SidebarView[]>([
-    {
-      id: SidebarViewId.FILES,
-      icon: <Files />,
-      name: 'Files',
-      component: <SidebarViewFiles />,
-    },
-    {
-      id: SidebarViewId.SEARCH,
-      icon: <Search />,
-      name: 'Search',
-      component: <SidebarViewSearch />,
-    },
-    {
-      id: SidebarViewId.GIT,
-      icon: <SiGit />,
-      name: 'Git',
-      component: <SidebarViewGit />,
-    },
-    {
-      id: SidebarViewId.PACKAGES,
-      icon: <Package />,
-      name: 'Packages',
-      component: <SidebarViewPackages />,
-    },
-  ])
+interface PlaygroundPageProps {
+  name: string
+}
+export const PlaygroundPage: FC<PlaygroundPageProps> = ({ name }) => {
+  console.log('workspace name', name)
 
   const [editorViews] = useState<EditorView[]>([
     {
@@ -107,16 +70,41 @@ export const PlaygroundPage = () => {
     },
   ])
 
+  const [sidebarViews] = useState<SidebarView[]>([
+    {
+      id: SidebarViewId.FILES,
+      icon: <Files />,
+      name: 'Files',
+      component: <FileTree workspaceName={name} />,
+    },
+    {
+      id: SidebarViewId.SEARCH,
+      icon: <Search />,
+      name: 'Search',
+      component: <SidebarViewSearch />,
+    },
+    {
+      id: SidebarViewId.GIT,
+      icon: <SiGit />,
+      name: 'Git',
+      component: <SidebarViewGit />,
+    },
+    {
+      id: SidebarViewId.PACKAGES,
+      icon: <Package />,
+      name: 'Packages',
+      component: <SidebarViewPackages />,
+    },
+  ])
+
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <PanelGroup
-        views={[
-          <SideBar key="primary-sidebar" views={sidebarViews} />,
-          <EditorWithTabs key="editor-tabs" views={editorViews} />,
-        ]}
-        defaultLayout={defaultLayout}
-        onLayout={onLayout}
-      />
-    </Suspense>
+    <DefaultLayout
+      id={LayoutId.PLAYGROUND}
+      primarySideBar={<SideBar key="primary-sidebar" views={sidebarViews} />}
+    >
+      <Suspense fallback={<div>Loading...</div>}>
+        <EditorWithTabs key="editor-tabs" views={editorViews} />
+      </Suspense>
+    </DefaultLayout>
   )
 }

@@ -1,12 +1,12 @@
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
+import { Badge } from '@mc/ui/shadcn/badge'
+import { Button } from '@mc/ui/shadcn/button'
+import { Card } from '@mc/ui/shadcn/card'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
+} from '@mc/ui/shadcn/dropdown-menu'
 import { Code, MoreHorizontal } from 'lucide-react'
 
 interface ProjectCardProps {
@@ -56,7 +56,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
           <p className="text-muted-foreground text-sm">{project.description}</p>
         </div>
       )}
-      {(project.updatedAt || project.updatedBy || project.status) && (
+      {(project.updatedAt ?? project.updatedBy ?? project.status) && (
         <div className="border-border text-muted-foreground border-t px-4 py-3 text-xs">
           <div className="flex items-center gap-2">
             {project.status === 'success' && (
