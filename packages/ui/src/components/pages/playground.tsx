@@ -8,39 +8,33 @@ import {
   SiJson,
 } from '@icons-pack/react-simple-icons'
 import { EditorMode } from '@mc/shared/constants/editor'
-import { LoadingKey } from '@mc/shared/constants/loading'
 import { SidebarViewId } from '@mc/shared/constants/sidebar'
-import { useLoading } from '@mc/shared/hooks/useLoading'
+import { initializeWorkspaces } from '@mc/shared/lib/workspace'
 import { EditorView, SidebarView } from '@mc/shared/types/view'
 import { useStore } from '@mc/store'
-import { EditorViewCss } from '@mc/ui/components/editor-view-css'
-import { EditorViewHtml } from '@mc/ui/components/editor-view-html'
-import { EditorViewJs } from '@mc/ui/components/editor-view-js'
-import { EditorViewJson } from '@mc/ui/components/editor-view-json'
+import { EditorViewCss } from '@mc/ui/components/css-editor'
+import { EditorWithTabs } from '@mc/ui/components/editor-with-tabs'
+import { EditorViewHtml } from '@mc/ui/components/html-editor'
+import { EditorViewJs } from '@mc/ui/components/js-editor'
+import { EditorViewJson } from '@mc/ui/components/json-editor'
 import { PanelGroup } from '@mc/ui/components/panel-group'
-import { PanelSidebar } from '@mc/ui/components/panel-sidebar'
-import { PanelTabs } from '@mc/ui/components/panel-tabs'
+import { SideBar } from '@mc/ui/components/side-bar'
 import { SidebarViewFiles } from '@mc/ui/components/sidebar-view-files'
 import { SidebarViewGit } from '@mc/ui/components/sidebar-view-git'
 import { SidebarViewPackages } from '@mc/ui/components/sidebar-view-packages'
 import { SidebarViewSearch } from '@mc/ui/components/sidebar-view-search'
 import { Files, Package, Search } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 
 export const PlaygroundPage = () => {
-  const isLoading = useStore(state => state.isLoading)
-  const initWorkspaces = useStore(state => state.initializeWorkspaces)
-
-  const initializeWorkspacesWithLoading = useLoading(
-    LoadingKey.WORKSPACES_INITIALIZING,
-    initWorkspaces,
-  )
-
-  const initializeWorkspacesIsLoading = isLoading(LoadingKey.WORKSPACES_INITIALIZING)
+  const workspacesAreReady = useStore(state => state.workspacesAreReady)
+  const setWorkspacesReady = useStore(state => state.setWorkspacesReady)
 
   useEffect(() => {
-    initializeWorkspacesWithLoading().catch(console.error)
-  }, [initializeWorkspacesWithLoading])
+    if (!workspacesAreReady) {
+      initializeWorkspaces().then(setWorkspacesReady).catch(console.error)
+    }
+  }, [workspacesAreReady, setWorkspacesReady])
 
   const defaultLayout = useStore(state => state.defaultLayout)
   const onLayout = (sizes: number[]) => {
@@ -85,10 +79,10 @@ export const PlaygroundPage = () => {
       component: <EditorViewCss />,
     },
     {
-      id: 'editor-js',
+      id: 'editor-html',
       icon: <SiHtml5 />,
-      name: 'index.js',
-      path: '/index.js',
+      name: 'index.html',
+      path: '/index.html',
       content: '',
       mode: EditorMode.CODE,
       component: <EditorViewHtml />,
@@ -114,13 +108,15 @@ export const PlaygroundPage = () => {
   ])
 
   return (
-    <PanelGroup
-      views={[
-        <PanelSidebar key="primary-sidebar" views={sidebarViews} />,
-        <PanelTabs key="editor-tabs" views={editorViews} />,
-      ]}
-      defaultLayout={defaultLayout}
-      onLayout={onLayout}
-    />
+    <Suspense fallback={<div>Loading...</div>}>
+      <PanelGroup
+        views={[
+          <SideBar key="primary-sidebar" views={sidebarViews} />,
+          <EditorWithTabs key="editor-tabs" views={editorViews} />,
+        ]}
+        defaultLayout={defaultLayout}
+        onLayout={onLayout}
+      />
+    </Suspense>
   )
 }
