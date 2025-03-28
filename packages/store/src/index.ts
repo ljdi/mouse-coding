@@ -12,7 +12,10 @@ import {
   createLayoutSlice,
   type LayoutSlice,
 } from '@mc/store/slices/layout-slice'
-import { createLoadingSlice, LoadingSlice } from '@mc/store/slices/loading-slice'
+import {
+  createLoadingSlice,
+  LoadingSlice,
+} from '@mc/store/slices/loading-slice'
 import {
   createWorkspaceSlice,
   type WorkspaceSlice,

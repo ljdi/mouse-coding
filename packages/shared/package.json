@@ -10,7 +10,6 @@
     "./lib/*": "./src/lib/*.ts",
     "./utils": "./src/utils/index.ts",
     "./utils/*": "./src/utils/*.ts"
-
   },
   "scripts": {
     "check-types": "tsc --noEmit",

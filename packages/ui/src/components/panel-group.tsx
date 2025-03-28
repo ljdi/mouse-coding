@@ -28,9 +28,7 @@ export const PanelGroup: FC<PanelWrapperProps> = ({
     >
       {views.map((view, index) => (
         <Fragment key={index}>
-          {index > 0 && (
-            <ResizableHandle className="w-0 after:w-0" />
-          )}
+          {index > 0 && <ResizableHandle className="w-0 after:w-0" />}
           <ResizablePanel defaultSize={defaultLayout[index]}>
             {view}
           </ResizablePanel>

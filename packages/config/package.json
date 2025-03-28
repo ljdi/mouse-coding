@@ -14,9 +14,9 @@
   },
   "scripts": {
     "check-types": "tsc --noEmit",
-    "lint": "eslint . --max-warnings 0",
+    "lint": "eslint -c ./eslint/index.js . --max-warnings 0",
     "lint-staged": "lint-staged --concurrent false",
-    "lint:fix": "eslint . --max-warnings 0 --fix"
+    "lint:fix": "eslint -c ./eslint/index.js . --fix"
   },
   "peerDependencies": {
     "@eslint/css": "^0.5.0",

@@ -16,14 +16,21 @@ export const EditorWithTabs: FC<PlaygroundTabsProps> = ({ views }) => {
 
   return (
     <Tabs
-      className="w-full h-full bg-neutral-400 dark:bg-neutral-600"
+      className="h-full w-full bg-neutral-300 dark:bg-neutral-700"
       selectedIndex={selectedIndex}
       onSelect={setSelectedIndex}
     >
       <ScrollArea className="whitespace-nowrap">
-        <TabList className="flex w-full h-10 bg-neutral-100 dark:bg-neutral-800">
+        <TabList className="flex h-10 w-full bg-neutral-100 dark:bg-neutral-800">
           {views.map((view, index) => (
-            <Tab key={index} className={cn('flex rounded-none! px-2 items-center', selectedIndex === index && 'outline-0 bg-neutral-200 dark:bg-neutral-800 text-neutral-950 dark:text-neutral-50')}>
+            <Tab
+              key={index}
+              className={cn(
+                'rounded-none! flex items-center px-2',
+                selectedIndex === index
+                && 'bg-neutral-200 text-neutral-950 outline-0 dark:bg-neutral-800 dark:text-neutral-50',
+              )}
+            >
               {view.icon}
               <span className="ml-2">{view.name}</span>
             </Tab>

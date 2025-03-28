@@ -25,11 +25,15 @@ export const createEditorSlice: StateCreator<EditorSlice> = set => ({
       openEditors: state.openEditors.filter(e => e !== editor),
     }))
   },
-  closeAllEditors: () => { set({ openEditors: [] }) },
+  closeAllEditors: () => {
+    set({ openEditors: [] })
+  },
   closeOtherEditors: (editor: Editor) => {
     set(() => ({
       openEditors: [editor],
     }))
   },
-  setFocusedEditor: (editor: Editor | null) => { set({ focusedEditor: editor }) },
+  setFocusedEditor: (editor: Editor | null) => {
+    set({ focusedEditor: editor })
+  },
 })

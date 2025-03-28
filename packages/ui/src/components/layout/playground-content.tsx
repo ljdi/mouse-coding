@@ -5,8 +5,6 @@ interface PlaygroundContentProps {
 }
 export const PlaygroundContent: FC<PlaygroundContentProps> = ({ children }) => {
   return (
-    <div className="bg-neutral-800 flex flex-1 overflow-hidden">
-      {children}
-    </div>
+    <div className="flex flex-1 overflow-hidden bg-neutral-800">{children}</div>
   )
 }
