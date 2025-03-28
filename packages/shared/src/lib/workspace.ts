@@ -34,8 +34,7 @@ export const getWorkspaceNames = async () => {
 }
 
 export const createWorkspace = async (workspaceName: string) => {
-  const workspacePath = await getWorkspacePath(workspaceName)
-
+  const workspacePath = path.join(WORKSPACES_PATH, workspaceName)
   await fs.mkdir(workspacePath, { recursive: true })
 }
 
