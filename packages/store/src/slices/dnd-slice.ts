@@ -7,5 +7,7 @@ export interface DndSlice {
 
 export const createDndSlice: StateCreator<DndSlice> = set => ({
   components: [],
-  addComponent: (component) => { set(state => ({ components: [...state.components, component] })) },
+  addComponent: (component) => {
+    set(state => ({ components: [...state.components, component] }))
+  },
 })

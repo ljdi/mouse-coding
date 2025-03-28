@@ -19,9 +19,7 @@ export const StoreProvider: FC<StoreProviderProps> = ({
   // 使用 useRef 确保 store 实例在重新渲染时保持不变
   const storeRef = useRef<ReturnType<typeof createStore>>(null)
 
-  if (!storeRef.current) {
-    storeRef.current = createStore(initialState)
-  }
+  storeRef.current ??= createStore(initialState)
 
   return (
     <StoreContext.Provider value={storeRef.current}>

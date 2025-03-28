@@ -1,32 +1,31 @@
-import { Workspace } from '@mc/workspace'
+import { Workspace } from '@mc/shared/lib/workspace'
 import type { StateCreator } from 'zustand'
 
-// 定义 Counter Slice 的状态和操作
 export interface WorkspaceSlice {
   // TODO: File System API 只有 Chromium 系列浏览器支持，有时间再做
   // syncDirectoryHandle?: FileSystemDirectoryHandle;
+
   workspace?: Workspace
-  initWorkspaces: () => void
-  createWorkspace: (workspace: Workspace) => void
-  changeWorkspace: (workspace: Workspace) => void
-  listWorkspaces: () => Promise<string[]>
-  // packageManager?: PackageManager;
+  selectedWorkspaceName?: string
+  isMounted: boolean
+  mount: () => Promise<void>
+  selectWorkspace: (name: string) => void
+  setWorkspace: (workspace: Workspace) => void
 }
 
-// 创建 Workspace Slice
 export const createWorkspaceSlice: StateCreator<WorkspaceSlice> = set => ({
+  selectedWorkspaceName: undefined,
   workspace: undefined,
-  initWorkspaces: async () => {
-    await Workspace.initWorkspaces()
+  isMounted: false,
+  mount: async () => {
+    await Workspace.mount()
+    set({ isMounted: true })
   },
-  createWorkspace: (workspace) => {
-    set({ workspace: Workspace.createWorkspace(workspace) })
+
+  selectWorkspace: (activeWorkspaceName) => {
+    set({ selectedWorkspaceName: activeWorkspaceName })
   },
-  changeWorkspace: ({ name, path }) => {
-    set({ workspace: new Workspace(name, path) })
-  },
-  listWorkspaces: async () => {
-    const workspaces = await Workspace.listWorkspaces()
-    return workspaces
+  setWorkspace: (workspace: Workspace) => {
+    set({ workspace })
   },
 })

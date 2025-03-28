@@ -1,3 +1,7 @@
+import {
+  LayoutId,
+  RESIZEABLE_PANEL_SIZE_KEY_PREFIX,
+} from '@mc/shared/constants/layout'
 import { StoreProvider } from '@mc/store/providers/store-provider'
 import '@mc/ui/globals.css'
 import type { Metadata } from 'next'
@@ -19,12 +23,18 @@ export default async function RootLayout({
   children: React.ReactNode
 }) {
   const cookieStore = await cookies()
-  const layout = cookieStore.get('react-resizable-panels:layout')
+  const defaultSizeMap: Record<string, number[]> = [
+    LayoutId.PLAYGROUND,
+    LayoutId.WORKSPACE,
+  ].reduce((acc, cur) => {
+    const layout = cookieStore.get(`${RESIZEABLE_PANEL_SIZE_KEY_PREFIX}${cur}`)
+    let defaultLayout: number[] | undefined
+    if (layout) {
+      defaultLayout = JSON.parse(layout.value) as typeof defaultLayout
+    }
+    return { ...acc, [cur]: defaultLayout }
+  }, {})
 
-  let defaultLayout: number[] | undefined
-  if (layout) {
-    defaultLayout = JSON.parse(layout.value) as typeof defaultLayout
-  }
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className} suppressHydrationWarning>
@@ -34,7 +44,7 @@ export default async function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <StoreProvider initialState={{ defaultLayout }}>
+          <StoreProvider initialState={{ defaultSizeMap }}>
             {children}
           </StoreProvider>
         </ThemeProvider>

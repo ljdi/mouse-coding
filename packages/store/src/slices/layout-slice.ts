@@ -1,17 +1,22 @@
+import { LayoutId } from '@mc/shared/constants/layout'
 import { StateCreator } from 'zustand'
 
 export interface LayoutSlice {
-  defaultLayout: number[]
-  isPrimarySidebarCollapsed: boolean
-  togglePrimarySidebar: () => void
+  defaultSizeMap: Record<LayoutId, number[]>
+
+  isPrimarySideBarCollapsed: boolean
+  togglePrimarySideBar: () => void
 }
 
 export const createLayoutSlice: StateCreator<LayoutSlice> = set => ({
-  defaultLayout: [10, 90],
-  isPrimarySidebarCollapsed: false,
-  togglePrimarySidebar: () => {
+  defaultSizeMap: [LayoutId.PLAYGROUND, LayoutId.WORKSPACE].reduce(
+    (acc, cur) => ({ ...acc, [cur]: [10, 90] }),
+    {} as Record<LayoutId, number[]>,
+  ),
+  isPrimarySideBarCollapsed: false,
+  togglePrimarySideBar: () => {
     set(state => ({
-      isPrimarySidebarCollapsed: !state.isPrimarySidebarCollapsed,
+      isPrimarySideBarCollapsed: !state.isPrimarySideBarCollapsed,
     }))
   },
 })

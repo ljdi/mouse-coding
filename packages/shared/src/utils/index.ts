@@ -1,7 +1,13 @@
 import { promises as fs } from '@zenfs/core'
 import * as path from '@zenfs/core/path.js'
 
-export const isClient = () => typeof window === 'object'
+export const getKeyFromEnum = <V extends string | number>(
+  enumType: Record<string, V>,
+  value: V,
+): string | undefined => {
+  return Object.keys(enumType).find(key => enumType[key] === value)
+}
+
 export const isObject = (obj?: unknown) =>
   obj ? typeof obj === 'object' : false
 export const { isArray } = Array
