@@ -5,27 +5,21 @@ export interface WorkspaceSlice {
   // TODO: File System API 只有 Chromium 系列浏览器支持，有时间再做
   // syncDirectoryHandle?: FileSystemDirectoryHandle;
 
-  workspace?: Workspace
   selectedWorkspaceName?: string
   isMounted: boolean
   mount: () => Promise<void>
-  selectWorkspace: (name: string) => void
-  setWorkspace: (workspace: Workspace) => void
+  listWorkspace: () => Promise<string[]>
 }
 
 export const createWorkspaceSlice: StateCreator<WorkspaceSlice> = set => ({
   selectedWorkspaceName: undefined,
-  workspace: undefined,
   isMounted: false,
   mount: async () => {
     await Workspace.mount()
-    set({ isMounted: true })
+    set({ isMounted: Workspace.isMounted })
   },
 
-  selectWorkspace: (activeWorkspaceName) => {
-    set({ selectedWorkspaceName: activeWorkspaceName })
-  },
-  setWorkspace: (workspace: Workspace) => {
-    set({ workspace })
+  listWorkspace: () => {
+    return Workspace.listWorkspace()
   },
 })

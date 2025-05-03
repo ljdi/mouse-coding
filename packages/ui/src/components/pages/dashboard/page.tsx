@@ -3,37 +3,44 @@
 import { LayoutId } from '@mc/shared/constants/layout'
 import { useStore } from '@mc/store'
 import { DefaultLayout } from '@mc/ui/components/layout/default'
+import { WorkspaceCard } from '@mc/ui/components/pages/dashboard/workspace-card'
+import { WorkspaceCreateFormDialog } from '@mc/ui/components/pages/dashboard/workspace-create-form-dialog'
 import { SearchBar } from '@mc/ui/components/search-bar'
-import { WorkspaceCreateFormDialog } from '@mc/ui/components/workspace'
 import { Button } from '@mc/ui/shadcn/button'
-import { ChevronDown, Grid, List, Plus } from 'lucide-react'
-import { FC, useEffect, useState } from 'react'
+import { Plus } from 'lucide-react'
+import Link from 'next/link'
+import { FC, useCallback, useEffect, useState } from 'react'
 
-interface WorkspacePageProps {
+interface DashboardPageProps {
   defaultSize?: number[]
 }
-export const WorkspacePage: FC<WorkspacePageProps> = () => {
+export const DashboardPage: FC<DashboardPageProps> = () => {
   const isMounted = useStore(state => state.isMounted)
-  const workspaceMount = useStore(state => state.mount)
+  const listWorkspace = useStore(state => state.listWorkspace)
+  const [workspaceList, setWorkspaceList] = useState<string[]>([])
+
+  const getWorkspaceList = useCallback(() => {
+    listWorkspace().then(setWorkspaceList).catch(console.error)
+  }, [listWorkspace])
+
   useEffect(() => {
     if (isMounted) {
-      workspaceMount().catch(console.error)
+      getWorkspaceList()
     }
-  }, [isMounted, workspaceMount])
+  }, [isMounted, getWorkspaceList])
 
   const [open, setOpen] = useState(false)
 
   return (
-    <DefaultLayout
-      id={LayoutId.WORKSPACE}
-      search={<SearchBar />}
-    >
+    <DefaultLayout id={LayoutId.WORKSPACE} search={<SearchBar />}>
       <div className="flex min-h-screen flex-col">
         <div className="p-4">
           <div className="flex w-full items-center justify-between">
-            <h2 className="mb-4 flex-1 text-lg font-medium">项目</h2>
+            <h2 className="mb-4 flex-1 text-lg font-medium">
+              Workspace List
+            </h2>
             <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm">
+              {/* <Button variant="outline" size="sm">
                 按活跃度排序
                 <ChevronDown className="ml-1 h-4 w-4" />
               </Button>
@@ -53,21 +60,28 @@ export const WorkspacePage: FC<WorkspacePageProps> = () => {
                 >
                   <List className="h-4 w-4" />
                 </Button>
-              </div>
+              </div> */}
 
               <Button size="sm">
                 <Plus className="mr-1 h-4 w-4" />
-                <span>Create</span>
                 <WorkspaceCreateFormDialog
                   open={open}
                   trigger="Create"
                   onOpenChange={setOpen}
-                  onSubmitted={() => {
-                  // TODO: 刷新列表
-                  }}
+                  onSubmitted={getWorkspaceList}
                 />
               </Button>
             </div>
+          </div>
+          <div>
+            {workspaceList.map(name => (
+              <Link
+                href={`/workspace/${name}/playground`}
+                key={name}
+              >
+                <WorkspaceCard name={name} />
+              </Link>
+            ))}
           </div>
         </div>
       </div>
