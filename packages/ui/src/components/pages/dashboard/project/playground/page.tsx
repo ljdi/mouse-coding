@@ -11,6 +11,7 @@ import { EditorMode } from '@mc/shared/constants/editor'
 import { LayoutId } from '@mc/shared/constants/layout'
 import { SidebarViewId } from '@mc/shared/constants/sidebar'
 import { EditorView, SidebarView } from '@mc/shared/types/view'
+import { useStore } from '@mc/store'
 import { EditorViewCss } from '@mc/ui/components/editor'
 import { EditorViewHtml } from '@mc/ui/components/html-editor'
 import { EditorViewJs } from '@mc/ui/components/js-editor'
@@ -23,13 +24,17 @@ import { SidebarViewPackages } from '@mc/ui/components/sidebar-view-packages'
 import { SidebarViewSearch } from '@mc/ui/components/sidebar-view-search'
 import { EditorWithTabs } from '@mc/ui/components/tabs'
 import { Files, Package, Search } from 'lucide-react'
-import { FC, Suspense, useState } from 'react'
+import { FC, Suspense, useEffect, useState } from 'react'
 
 interface PlaygroundPageProps {
-  name: string
+  workspaceName: string
 }
-export const PlaygroundPage: FC<PlaygroundPageProps> = ({ name }) => {
-  console.log('workspace name', name)
+export const PlaygroundPage: FC<PlaygroundPageProps> = ({ workspaceName }) => {
+  const setWorkspace = useStore(state => state.setWorkspace)
+
+  useEffect(() => {
+    setWorkspace(workspaceName)
+  }, [workspaceName, setWorkspace])
 
   const [editorViews] = useState<EditorView[]>([
     {
@@ -75,7 +80,7 @@ export const PlaygroundPage: FC<PlaygroundPageProps> = ({ name }) => {
       id: SidebarViewId.FILES,
       icon: <Files />,
       name: 'Files',
-      component: <FileTree workspaceName={name} />,
+      component: <FileTree />,
     },
     {
       id: SidebarViewId.SEARCH,

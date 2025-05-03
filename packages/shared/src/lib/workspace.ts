@@ -1,9 +1,11 @@
 import { TMP_PATH, WORKSPACES_PATH } from '@mc/shared/constants/fs'
 import { PackageManager } from '@mc/shared/lib/package-manager'
+import { DataSourceItems } from '@mc/shared/types/file-tree'
 import { configure, InMemory } from '@zenfs/core'
 import * as pathModule from '@zenfs/core/path.js'
 import * as fileSystemModule from '@zenfs/core/promises'
 import { IndexedDB } from '@zenfs/dom'
+import { TreeItemIndex } from 'react-complex-tree'
 
 export const getWorkspacePath = async (workspaceName: string) => {
   if (!workspaceName) {
@@ -58,20 +60,12 @@ export const renameWorkspace = async (
 }
 
 export class Workspace {
-  public static root = WORKSPACES_PATH
-  public static isMounted = false
+  static root = WORKSPACES_PATH
+  static isMounted = false
 
   private packageManager: PackageManager
 
-  constructor(public name: string) {
-    this.packageManager = new PackageManager(this.cwd)
-  }
-
-  get cwd() {
-    return pathModule.join(Workspace.root, this.name)
-  }
-
-  public static async mount() {
+  static async mount() {
     await configure({
       mounts: {
         [Workspace.root]: IndexedDB,
@@ -85,27 +79,24 @@ export class Workspace {
     Workspace.isMounted = true
   }
 
-  public static checkWorkspaceRootMounted() {
+  static checkFileSystemMounted() {
     if (!Workspace.isMounted) {
-      throw Error('Workspaces not mounted')
+      throw Error('File System not mounted')
     }
   }
 
-  public static async checkWorkspaceExists(
-    workspaceNameOrPath: string,
-    throwError = false,
-  ) {
-    const path = pathModule.isAbsolute(workspaceNameOrPath)
-      ? workspaceNameOrPath
-      : pathModule.join(Workspace.root, workspaceNameOrPath)
+  static async checkWorkspaceExists(name: string, throwError = false) {
+    const path = pathModule.resolve(Workspace.root, name)
     const exists = await fileSystemModule.exists(path)
+
     if (!exists && throwError) {
-      throw Error(`Workspace "${workspaceNameOrPath}" not found`)
+      throw Error(`Workspace "${name}" not found`)
     }
     return exists
   }
 
-  static async getWorkspaceNames() {
+  static async listWorkspace() {
+    Workspace.checkFileSystemMounted()
     return (
       await fileSystemModule.readdir(Workspace.root, { withFileTypes: true })
     )
@@ -113,38 +104,60 @@ export class Workspace {
       .map(dirent => dirent.name)
   }
 
-  public async create() {
+  /**
+   * 根据工作空间相对路径返回 react-complex-tree 数据源
+   * @param path 工作空间相对路径
+   * @returns react-complex-tree 数据源
+   */
+  static async getFileTreeDataSourceItems(path: string) {
+    // 组装成绝对路径
+    const exists = await fileSystemModule.exists(path)
+    if (!exists) {
+      throw Error(`${path} does not exist`)
+    }
+
+    const directoryResult = await fileSystemModule.readdir(path, {
+      withFileTypes: true,
+    })
+    // TODO: 现在是返回 react-complex-tree 的 ExplicitDataSource<string>['items'] 类型结构, 可以修改成更通用的结构
+    const result: DataSourceItems = {}
+    for (const dirent of directoryResult) {
+      const curPath = pathModule.join(path, dirent.name)
+      const isFolder = dirent.isDirectory()
+      let children: (TreeItemIndex)[] | undefined = undefined
+      // 递归获取子目录
+      if (isFolder) {
+        children = await Workspace.getFileTreeDataSourceItems(curPath).then(
+          res => Object.keys(res),
+        )
+      }
+      result[curPath] = {
+        index: curPath,
+        isFolder,
+        children,
+        data: dirent.name,
+      }
+    }
+    return result
+  }
+
+  constructor(public name: string) {
+    this.packageManager = new PackageManager(this.cwd)
+  }
+
+  get cwd() {
+    return pathModule.join(Workspace.root, this.name)
+  }
+
+  async create() {
     const workspacePath = this.cwd
     await fileSystemModule.mkdir(workspacePath, { recursive: true })
   }
 
-  public async init() {
-    Workspace.checkWorkspaceRootMounted()
+  async init() {
+    Workspace.checkFileSystemMounted()
     await Workspace.checkWorkspaceExists(this.name, true)
 
     await this.packageManager.init()
-  }
-
-  public async getPathEntries(path: string) {
-    const workspacePath = pathModule.join(Workspace.root, this.name)
-    await Workspace.checkWorkspaceExists(workspacePath, true)
-
-    const readDirectoryResult = await fileSystemModule.readdir(workspacePath, {
-      withFileTypes: true,
-    })
-    // TODO: 现在是返回 react-complex-tree 的 ExplicitDataSource<string>['items'] 类型结构, 可以修改成更通用的结构
-    return readDirectoryResult.reduce((res, cur) => {
-      const curPath = pathModule.join(path, cur.name)
-      const isFolder = cur.isDirectory()
-      return {
-        ...res,
-        [curPath]: {
-          index: curPath,
-          isFolder,
-          children: isFolder ? [] : undefined,
-          data: cur.name,
-        },
-      }
-    }, {})
   }
 }
