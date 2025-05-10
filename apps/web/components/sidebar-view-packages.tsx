@@ -1,7 +1,7 @@
 'use client'
 
-import { Button } from '@mc/ui/shadcn/button'
-import { Input } from '@mc/ui/shadcn/input'
+import { Button } from '@mc/ui/components/button'
+import { Input } from '@mc/ui/components/input'
 import { Download, ExpandIcon as Extension } from 'lucide-react'
 
 export function SidebarViewPackages() {

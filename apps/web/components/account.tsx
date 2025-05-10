@@ -1,6 +1,6 @@
-import { Avatar, AvatarFallback, AvatarImage } from '@mc/ui/shadcn/avatar'
-import { Button } from '@mc/ui/shadcn/button'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@mc/ui/shadcn/dropdown-menu'
+import { Avatar, AvatarFallback, AvatarImage } from '@mc/ui/components/avatar'
+import { Button } from '@mc/ui/components/button'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@mc/ui/components/dropdown-menu'
 
 export const Account = () => {
   return (

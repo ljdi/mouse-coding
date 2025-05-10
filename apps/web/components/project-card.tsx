@@ -1,12 +1,12 @@
-import { Badge } from '@mc/ui/shadcn/badge'
-import { Button } from '@mc/ui/shadcn/button'
-import { Card } from '@mc/ui/shadcn/card'
+import { Badge } from '@mc/ui/components/badge'
+import { Button } from '@mc/ui/components/button'
+import { Card } from '@mc/ui/components/card'
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@mc/ui/shadcn/dropdown-menu'
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from '@mc/ui/components/dropdown-menu'
 import { Code, MoreHorizontal } from 'lucide-react'
 
 interface ProjectCardProps {

@@ -15,6 +15,9 @@ export const createWorkspaceSlice: StateCreator<WorkspaceSlice> = set => ({
   selectedWorkspaceName: undefined,
   isMounted: false,
   mount: async () => {
+    if (Workspace.isMounted) {
+      return
+    }
     await Workspace.mount()
     set({ isMounted: Workspace.isMounted })
   },

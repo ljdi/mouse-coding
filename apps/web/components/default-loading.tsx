@@ -1,4 +1,4 @@
-import { Skeleton } from '@mc/ui/shadcn/skeleton'
+import { Skeleton } from '@mc/ui/components/skeleton'
 
 export const DefaultLoading = () => {
   return (

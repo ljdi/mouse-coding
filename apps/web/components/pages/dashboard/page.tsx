@@ -2,11 +2,11 @@
 
 import { LayoutId } from '@mc/shared/constants/layout'
 import { useStore } from '@mc/store'
+import { Button } from '@mc/ui/components/button'
 import { DefaultLayout } from '@mc/ui/components/layout/default'
 import { WorkspaceCard } from '@mc/ui/components/pages/dashboard/workspace-card'
 import { WorkspaceCreateFormDialog } from '@mc/ui/components/pages/dashboard/workspace-create-form-dialog'
 import { SearchBar } from '@mc/ui/components/search-bar'
-import { Button } from '@mc/ui/shadcn/button'
 import { Plus } from 'lucide-react'
 import Link from 'next/link'
 import { FC, useCallback, useEffect, useState } from 'react'
@@ -76,7 +76,7 @@ export const DashboardPage: FC<DashboardPageProps> = () => {
           <div>
             {workspaceList.map(name => (
               <Link
-                href={`/workspace/${name}/playground`}
+                href={`/dashboard/${name}/playground`}
                 key={name}
               >
                 <WorkspaceCard name={name} />

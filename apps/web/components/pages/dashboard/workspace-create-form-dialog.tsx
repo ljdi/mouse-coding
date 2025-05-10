@@ -3,7 +3,7 @@ import { LoadingKey } from '@mc/shared/constants/loading'
 import { useLoading } from '@mc/shared/hooks/useLoading'
 import { Workspace } from '@mc/shared/lib/workspace'
 import { useStore } from '@mc/store'
-import { Button } from '@mc/ui/shadcn/button'
+import { Button } from '@mc/ui/components/button'
 import {
   Dialog,
   DialogClose,
@@ -13,7 +13,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@mc/ui/shadcn/dialog'
+} from '@mc/ui/components/dialog'
 import {
   Form,
   FormControl,
@@ -21,8 +21,8 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@mc/ui/shadcn/form'
-import { Input } from '@mc/ui/shadcn/input'
+} from '@mc/ui/components/form'
+import { Input } from '@mc/ui/components/input'
 import { Loader2 } from 'lucide-react'
 import { FC, FormEvent } from 'react'
 import { useForm } from 'react-hook-form'

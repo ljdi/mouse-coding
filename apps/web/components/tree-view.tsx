@@ -1,18 +1,18 @@
 'use client'
 
+import { Button } from '@mc/ui/components/button'
 import { cn } from '@mc/ui/lib/utils'
-import { Button } from '@mc/ui/shadcn/button'
-// import { Input } from '@mc/ui/shadcn/input'
+// import { Input } from '@mc/ui/components/input'
 import { ChevronRight } from 'lucide-react'
 import React, { useCallback, useMemo, useRef, useState } from 'react'
 import {
-  ControlledTreeEnvironment,
-  Tree,
-  TreeDataProvider,
-  type TreeItem,
-  type TreeItemIndex,
-  type TreeRef,
-  type TreeViewState,
+    ControlledTreeEnvironment,
+    Tree,
+    TreeDataProvider,
+    type TreeItem,
+    type TreeItemIndex,
+    type TreeRef,
+    type TreeViewState,
 } from 'react-complex-tree'
 
 const treeData: Record<TreeItemIndex, TreeItem<string>> = {
