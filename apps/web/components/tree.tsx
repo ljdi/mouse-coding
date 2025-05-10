@@ -1,7 +1,7 @@
 'use client'
 
+import { ScrollArea } from '@mc/ui/components/scroll-area'
 import { cn } from '@mc/ui/lib/utils'
-import { ScrollArea } from '@mc/ui/shadcn/scroll-area'
 import * as AccordionPrimitive from '@radix-ui/react-accordion'
 import { ChevronRight, type LucideIcon } from 'lucide-react'
 import React from 'react'

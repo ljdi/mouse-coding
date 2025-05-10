@@ -3,14 +3,14 @@
 import { SidebarViewId } from '@mc/shared/constants/sidebar'
 import { type SidebarView } from '@mc/shared/types/view'
 import { useStore } from '@mc/store'
-import { Button } from '@mc/ui/shadcn/button'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@mc/ui/shadcn/tabs'
+import { Button } from '@mc/ui/components/button'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@mc/ui/components/tabs'
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@mc/ui/shadcn/tooltip'
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from '@mc/ui/components/tooltip'
 import { PanelLeftClose, PanelLeftOpen } from 'lucide-react'
 import { type FC } from 'react'
 

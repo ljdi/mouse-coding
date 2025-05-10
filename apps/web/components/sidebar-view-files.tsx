@@ -1,7 +1,7 @@
 'use client'
 
+import { TreeView } from '@/components/tree-view'
 import { useStore } from '@mc/store'
-import { TreeView } from '@mc/ui/components/tree-view'
 import { useEffect } from 'react'
 
 export const FileTree = () => {

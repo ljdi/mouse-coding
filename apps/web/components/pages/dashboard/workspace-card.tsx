@@ -5,7 +5,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@mc/ui/shadcn/card'
+} from '@mc/ui/components/card'
 import { FC } from 'react'
 
 interface WorkspaceCardProps {

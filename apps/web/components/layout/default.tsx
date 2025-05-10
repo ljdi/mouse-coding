@@ -1,14 +1,14 @@
 'use client'
 
+import { ModeToggle } from '@/components/mode-toggle'
+import { PanelGroup } from '@/components/panel-group'
+import { SidebarController } from '@/components/side-bar'
 import {
   LayoutId,
   RESIZEABLE_PANEL_SIZE_KEY_PREFIX,
 } from '@mc/shared/constants/layout'
 import { useStore } from '@mc/store'
-import { ModeToggle } from '@mc/ui/components/mode-toggle'
-import { PanelGroup } from '@mc/ui/components/panel-group'
-import { SidebarController } from '@mc/ui/components/side-bar'
-import { Button } from '@mc/ui/shadcn/button'
+import { Button } from '@mc/ui/components/button'
 import { Mouse } from 'lucide-react'
 import { FC, ReactNode, useEffect } from 'react'
 

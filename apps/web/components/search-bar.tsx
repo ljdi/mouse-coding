@@ -1,6 +1,6 @@
 'use client'
 
-import { Input } from '@mc/ui/shadcn/input'
+import { Input } from '@mc/ui/components/input'
 import { Search } from 'lucide-react'
 
 export function SearchBar() {

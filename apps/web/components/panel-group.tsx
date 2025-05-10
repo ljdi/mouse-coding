@@ -1,10 +1,10 @@
 'use client'
 
 import {
-  ResizableHandle,
-  ResizablePanel,
-  ResizablePanelGroup,
-} from '@mc/ui/shadcn/resizable'
+    ResizableHandle,
+    ResizablePanel,
+    ResizablePanelGroup,
+} from '@mc/ui/components/resizable'
 import { FC, Fragment, ReactNode } from 'react'
 
 interface PanelWrapperProps {
