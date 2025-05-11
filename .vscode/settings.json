@@ -18,11 +18,4 @@
     }
   ],
   "typescript.tsdk": "node_modules/typescript/lib",
-  "editor.defaultFormatter": "dbaeumer.vscode-eslint",
-  "[markdown]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[typescript]": {
-    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
-  },
 }

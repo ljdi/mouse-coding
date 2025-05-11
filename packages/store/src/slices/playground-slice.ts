@@ -1,51 +1,65 @@
-import { Workspace } from '@mc/shared/lib/workspace'
 import type { DataSourceItems } from '@mc/shared/types/file-tree'
+import { BaseFile, FileType } from '@mc/shared/types/fs'
 import type { StateCreator } from 'zustand'
 
 export interface PlaygroundSlice {
-  workspace?: Workspace
   fileTreeDataSourceItems: DataSourceItems
-  setWorkspace: (workspaceName: string) => void
-  getFileTreeDataSourceItems: (workspacePath: string) => Promise<void>
+  convertFileTreeDataSourceItems: (
+    workspacePath: BaseFile<FileType.DIRECTORY>,
+  ) => void
 }
 
-export const createPlaygroundSlice: StateCreator<PlaygroundSlice> = (
-  set,
-  get,
-) => ({
+export const createPlaygroundSlice: StateCreator<PlaygroundSlice> = set => ({
   fileTreeDataSourceItems: {},
+  convertFileTreeDataSourceItems: ({ path, name, metadata }) => {
+    const fileTreeDataSourceItems: DataSourceItems = {}
 
-  setWorkspace: (workspaceName: string) => {
-    const workspace = new Workspace(workspaceName)
-    set({
-      workspace,
-      fileTreeDataSourceItems: {
-        [workspace.cwd]: {
-          index: workspace.cwd,
-          isFolder: true,
+    // Initialize root node
+    fileTreeDataSourceItems[path] = {
+      index: path,
+      children: [],
+      isFolder: true,
+      data: name,
+    }
+
+    // Recursively convert file tree
+    const convert = (parentPath: string, children?: BaseFile[]) => {
+      if (!children?.length) return
+
+      const parentItem = fileTreeDataSourceItems[parentPath]
+      if (!parentItem) return
+
+      // Initialize children array if needed
+      if (!Array.isArray(parentItem.children)) {
+        parentItem.children = []
+      }
+
+      for (const item of children) {
+        const isFolder = item.type === FileType.DIRECTORY
+
+        // Add child to parent's children array
+        parentItem.children.push(item.path)
+
+        // Create item in the data source
+        fileTreeDataSourceItems[item.path] = {
+          index: item.path,
           children: [],
-          data: workspace.name,
-        },
-      },
-    })
-  },
-  getFileTreeDataSourceItems: async (path) => {
-    const { fileTreeDataSourceItems } = get()
-    const fileTreeItem = fileTreeDataSourceItems[path]
-    const fileTreeItems = await Workspace.getFileTreeDataSourceItems(path)
-    const newItems: DataSourceItems = Object.assign(
-      {},
-      fileTreeDataSourceItems,
-      fileTreeItems,
-      fileTreeItem
-        ? {
-            [path]: {
-              ...fileTreeItem,
-              children: Object.keys(fileTreeItems),
-            },
-          }
-        : {},
-    )
-    set({ fileTreeDataSourceItems: newItems })
+          isFolder,
+          data: item.name,
+        }
+
+        // Recursively process directory children
+        if (isFolder) {
+          convert(
+            item.path,
+            (item as BaseFile<FileType.DIRECTORY>).metadata?.children,
+          )
+        }
+      }
+    }
+
+    convert(path, metadata?.children)
+
+    set({ fileTreeDataSourceItems })
   },
 })

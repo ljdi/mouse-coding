@@ -4,8 +4,9 @@ import { use } from 'react'
 export default function Page({
   params,
 }: {
-  params: Promise<{ workspaceName: string }>
+  params: Promise<{ projectName: string }>
 }) {
-  const { workspaceName } = use(params)
-  return <PlaygroundPage workspaceName={workspaceName} />
+  const { projectName } = use(params)
+
+  return <PlaygroundPage projectName={projectName} />
 }

@@ -4,6 +4,7 @@ import {
   createEditorSlice,
   type EditorSlice,
 } from '@mc/store/slices/editor-slice'
+import { createFsSlice, FsSlice } from '@mc/store/slices/fs-slice'
 import {
   createLayoutSlice,
   type LayoutSlice,
@@ -27,10 +28,11 @@ import { useShallow } from 'zustand/shallow'
 // 组合所有 slices 到一个 store 类型
 export type StoreState = DndSlice &
   EditorSlice &
+  FsSlice &
   LayoutSlice &
-  WorkspaceSlice &
   LoadingSlice &
-  PlaygroundSlice
+  PlaygroundSlice &
+  WorkspaceSlice
 
 export type InitialState = Partial<{
   [K in keyof StoreState]: StoreState[K] extends (...args: unknown[]) => unknown
@@ -45,10 +47,11 @@ export const createStore = (initialState: InitialState = {}) => {
     return {
       ...createDndSlice(set, get, api),
       ...createEditorSlice(set, get, api),
+      ...createFsSlice(set, get, api),
       ...createLayoutSlice(set, get, api),
-      ...createWorkspaceSlice(set, get, api),
       ...createLoadingSlice(set, get, api),
       ...createPlaygroundSlice(set, get, api),
+      ...createWorkspaceSlice(set, get, api),
       ...initialState,
     }
   })
