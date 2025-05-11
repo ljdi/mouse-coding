@@ -1,6 +1,8 @@
-import type { DataSourceItems } from '@mc/shared/types/file-tree'
 import { BaseFile, FileType } from '@mc/shared/types/fs'
+import { ExplicitDataSource, TreeItemIndex } from 'react-complex-tree'
 import type { StateCreator } from 'zustand'
+
+type DataSourceItems = ExplicitDataSource<string>['items']
 
 export interface PlaygroundSlice {
   fileTreeDataSourceItems: DataSourceItems
@@ -29,7 +31,7 @@ export const createPlaygroundSlice: StateCreator<PlaygroundSlice> = set => ({
       const parentItem = fileTreeDataSourceItems[parentPath]
       if (!parentItem) return
 
-      // Initialize children array if needed
+      // Ensure children array is initialized
       if (!Array.isArray(parentItem.children)) {
         parentItem.children = []
       }
@@ -48,18 +50,58 @@ export const createPlaygroundSlice: StateCreator<PlaygroundSlice> = set => ({
           data: item.name,
         }
 
-        // Recursively process directory children
+        // Recursively process directory children if it's a folder
         if (isFolder) {
-          convert(
-            item.path,
-            (item as BaseFile<FileType.DIRECTORY>).metadata?.children,
-          )
+          const directoryItem = item as BaseFile<FileType.DIRECTORY>
+          convert(item.path, directoryItem.metadata?.children)
         }
       }
     }
 
+    // Start conversion process from the root
     convert(path, metadata?.children)
 
-    set({ fileTreeDataSourceItems })
+    // Sort all nodes - separate folders and files
+    const sortedDataSourceItems = Object.entries(
+      fileTreeDataSourceItems,
+    ).reduce<DataSourceItems>((acc, [key, item]) => {
+      // Skip items with no children or undefined children
+      if (!item.children?.length) {
+        acc[key] = item
+        return acc
+      }
+
+      // Partition children into folders and files for sorting
+      const folders: TreeItemIndex[] = []
+      const files: TreeItemIndex[] = []
+
+      // Sort children into folders and files
+      for (const childIndex of item.children) {
+        const childItem = fileTreeDataSourceItems[childIndex]
+        if (!childItem) continue
+
+        if (childItem.isFolder) {
+          folders.push(childIndex)
+        }
+        else {
+          files.push(childIndex)
+        }
+      }
+
+      // Sort function for alphabetical ordering
+      const compareFn = (a: TreeItemIndex, b: TreeItemIndex) =>
+        String(a).localeCompare(String(b))
+
+      // Sort folders and files alphabetically and combine (folders first)
+      acc[key] = {
+        ...item,
+        children: [...folders.sort(compareFn), ...files.sort(compareFn)],
+      }
+
+      return acc
+    }, {})
+
+    // Update state with the sorted tree structure
+    set({ fileTreeDataSourceItems: sortedDataSourceItems })
   },
 })

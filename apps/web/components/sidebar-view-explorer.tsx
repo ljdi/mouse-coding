@@ -2,25 +2,31 @@
 
 import { writeFile } from '@mc/shared/utils/fs'
 import { useStore } from '@mc/store'
-import { Button } from '@mc/ui/components/button'
 import { cn } from '@mc/ui/lib/utils'
 import { useEffect } from 'react'
 // import { Input } from '@mc/ui/components/input'
 import * as pathModule from '@zenfs/core/path.js'
-import { ChevronRight } from 'lucide-react'
-import React, { useCallback, useMemo, useRef, useState } from 'react'
+import {
+  ChevronRight,
+  File,
+  FolderIcon,
+} from 'lucide-react'
+import { useRef, useState } from 'react'
 import {
   ControlledTreeEnvironment,
   Tree,
-  TreeDataProvider,
-  type TreeItem,
-  type TreeItemIndex,
+  TreeViewState,
   type TreeRef,
-  type TreeViewState,
 } from 'react-complex-tree'
 
-const viewStateInitial: TreeViewState = {
-  tree: {},
+const TREE_ID = 'project'
+
+const viewStateInitial = {
+  [TREE_ID]: {
+    focusedItem: undefined,
+    selectedItems: [],
+    expandedItems: [],
+  },
 }
 
 export const SidebarViewExplorer = () => {
@@ -44,78 +50,11 @@ export const SidebarViewExplorer = () => {
   }, [projectFileTree, convertFileTreeDataSourceItems])
 
   const tree = useRef<TreeRef>(null)
-  const [viewState, setViewState] = useState<TreeViewState>(viewStateInitial)
-  const [search] = useState<string | undefined>('')
-
-  const dataProvider = useMemo(
-    () => new CustomTreeDataProvider<string>(items),
-    [items],
-  )
-
-  const getItemPath = useCallback(
-    async (
-      search: string,
-      searchRoot: TreeItemIndex = 'root',
-    ): Promise<TreeItemIndex[] | null> => {
-      const item = await dataProvider.getTreeItem(searchRoot)
-
-      if (item.data.toLowerCase().includes(search.toLowerCase())) {
-        return [item.index]
-      }
-
-      const searchedItems = await Promise.all(
-        item.children?.map(child => getItemPath(search, child)) ?? [],
-      )
-
-      const result = searchedItems.find(item => item !== null)
-      if (!result) {
-        return null
-      }
-
-      return [item.index, ...result]
-    },
-    [dataProvider],
-  )
-
-  const onSubmit = useCallback(
-    (e: React.FormEvent<HTMLFormElement>) => {
-      e.preventDefault()
-      if (search) {
-        getItemPath(search)
-          .then((path) => {
-            if (path) {
-              return tree.current?.expandSubsequently(path).then(() => {
-                tree.current?.selectItems([...[path.at(-1) ?? '']])
-                tree.current?.focusItem(path.at(-1) ?? '')
-                tree.current?.toggleItemSelectStatus(path.at(-1) ?? '')
-              })
-            }
-          })
-          .catch((error) => {
-            console.error('Error getting item:', error)
-          })
-      }
-    },
-    [getItemPath, search],
-  )
+  const [viewState, setViewState]
+    = useState<TreeViewState<string>>(viewStateInitial)
 
   return (
-    <div className="mx-auto flex h-screen w-full flex-col gap-1 pt-[100px]">
-      {/*
-      <form
-        onSubmit={onSubmit}
-        className="flex items-center justify-start gap-2"
-      >
-        <Input
-          value={search}
-          onChange={(e) => {
-            setSearch(e.target.value)
-          }}
-          placeholder="Search..."
-        />
-        <Button type="submit">Search</Button>
-      </form>
-      */}
+    <div className="mx-auto flex h-screen w-full flex-col gap-1">
       <button
         onClick={(): void => {
           void writeFile(
@@ -128,7 +67,7 @@ export const SidebarViewExplorer = () => {
       >
         create file
       </button>
-      <ControlledTreeEnvironment<string>
+      <ControlledTreeEnvironment
         items={items}
         getItemTitle={item => item.data}
         canSearch={false}
@@ -136,7 +75,6 @@ export const SidebarViewExplorer = () => {
         canRename={false}
         viewState={viewState}
         onExpandItem={(item, treeId) => {
-          console.log('expand', item, treeId)
           setViewState(prevViewState => ({
             ...prevViewState,
             [treeId]: {
@@ -153,10 +91,9 @@ export const SidebarViewExplorer = () => {
             ...prevViewState,
             [treeId]: {
               ...prevViewState[treeId],
-              expandedItems:
-                prevViewState[treeId]?.expandedItems?.filter(
-                  id => id !== item.index,
-                ) ?? [],
+              expandedItems: prevViewState[treeId]?.expandedItems?.filter(
+                id => id !== item.index,
+              ),
             },
           }))
         }}
@@ -164,7 +101,7 @@ export const SidebarViewExplorer = () => {
           setViewState(prevViewState => ({
             ...prevViewState,
             [treeId]: {
-              ...prevViewState[treeId],
+              ...prevViewState[treeId as keyof typeof viewState],
               focusedItem: item.index,
             },
           }))
@@ -173,7 +110,7 @@ export const SidebarViewExplorer = () => {
           setViewState(prevViewState => ({
             ...prevViewState,
             [treeId]: {
-              ...prevViewState[treeId],
+              ...prevViewState[treeId as keyof typeof viewState],
               selectedItems: [items.at(-1) ?? ''],
             },
           }))
@@ -192,163 +129,66 @@ export const SidebarViewExplorer = () => {
         renderItemsContainer={({ children, containerProps }) => {
           return <ul {...containerProps}>{children}</ul>
         }}
-        renderItem={({ title, item, arrow, context, depth, children }) => {
+        renderItem={({ title, item, context, depth, children }) => {
           const indentation = 10 * depth
           return (
             <li
               {...context.itemContainerWithChildrenProps}
-              className="[&>button]:aria-[selected=true]:bg-primary/50 my-[1px] [&>button>svg]:aria-[expanded=true]:rotate-90"
+              className="[&>div]:aria-[selected=true]:bg-primary/50 my-[1px] [&>div>svg.chevron]:aria-[expanded=true]:rotate-90"
             >
-              <Button
+              <div
                 {...context.itemContainerWithoutChildrenProps}
                 {...context.interactiveElementProps}
-                type="button"
-                variant="ghost"
-                size="sm"
                 className={cn(
-                  'w-fullitems-center h-6 w-full justify-start gap-[2px] border-none text-xs shadow-none',
-                  'focus:bg-secondary/20',
+                  'flex h-6 w-full items-center justify-between gap-[2px] border-none text-xs',
+                  'focus:bg-secondary/20 hover:bg-secondary/10 rounded px-1',
                 )}
                 style={{
-                  paddingLeft: `${String(item.isFolder ? indentation : indentation + 16)}px`,
+                  paddingLeft: `${String(indentation)}px`,
                 }}
               >
-                {item.isFolder && arrow}
-                {title}
-              </Button>
+                <div className="flex items-center gap-1">
+                  {item.isFolder
+                    ? (
+                        <ChevronRight
+                          {...context.arrowProps}
+                          className={cn(
+                            'chevron transition-transform duration-150',
+                            viewState[TREE_ID]?.expandedItems?.includes(
+                              item.index,
+                            ) && 'rotate-90',
+                          )}
+                          size={14}
+                        />
+                      )
+                    : (
+                        <span className="w-[14px]"></span>
+                      )}
+
+                  {item.isFolder
+                    ? (
+                        <FolderIcon size={14} className="text-yellow-500" />
+                      )
+                    : (
+                        <File size={14} className="text-blue-500" />
+                      )}
+                  <span>
+                    {title}
+                  </span>
+                </div>
+              </div>
               {children}
             </li>
           )
         }}
-        renderItemArrow={({ context }) => {
-          return <ChevronRight {...context.arrowProps} size={14} />
-        }}
-        renderItemTitle={({ title }) => <span>{title}</span>}
       >
         <Tree
           ref={tree}
-          treeId="project"
+          treeId={TREE_ID}
           rootItem={projectPath ?? '/'}
           treeLabel="Project File Tree"
         />
       </ControlledTreeEnvironment>
     </div>
   )
-}
-
-interface EventEmitterOptionsType<T> {
-  logger?: (log: string, payload?: T) => void
-}
-
-type EventHandlerType<T> =
-  | ((payload: T) => Promise<void> | void)
-  | null
-  | undefined
-
-class EventEmitter<EventPayload> {
-  private handlerCount = 0
-
-  private handlers: EventHandlerType<EventPayload>[] = []
-
-  private options?: EventEmitterOptionsType<EventPayload>
-
-  constructor(options?: EventEmitterOptionsType<EventPayload>) {
-    this.options = options
-  }
-
-  public get numberOfHandlers() {
-    return this.handlers.filter(h => !!h).length
-  }
-
-  public async emit(payload: EventPayload): Promise<void> {
-    const promises: Promise<void>[] = []
-
-    this.options?.logger?.('emit', payload)
-
-    for (const handler of this.handlers) {
-      if (handler) {
-        const res = handler(payload) as Promise<void>
-        if (typeof res.then === 'function') {
-          promises.push(res)
-        }
-      }
-    }
-
-    await Promise.all(promises)
-  }
-
-  public on(handler: EventHandlerType<EventPayload>): number {
-    this.options?.logger?.('on')
-    this.handlers.push(handler)
-
-    return this.handlerCount++
-  }
-
-  public off(handlerId: number) {
-    this.delete(handlerId)
-  }
-
-  public delete(handlerId: number) {
-    this.options?.logger?.('off')
-    this.handlers[handlerId] = null
-  }
-}
-
-class CustomTreeDataProvider<T> implements TreeDataProvider<T> {
-  private items: Record<TreeItemIndex, TreeItem<T>>
-  private setItemName?: (item: TreeItem<T>, newName: string) => TreeItem<T>
-
-  public readonly onDidChangeTreeDataEmitter = new EventEmitter<
-    TreeItemIndex[]
-  >()
-
-  constructor(
-    items: Record<TreeItemIndex, TreeItem<T>>,
-    setItemName?: (item: TreeItem<T>, newName: string) => TreeItem<T>,
-  ) {
-    this.items = items
-    this.setItemName = setItemName
-  }
-
-  public async getTreeItem(itemId: TreeItemIndex): Promise<TreeItem<T>> {
-    const item = this.items[itemId]
-    if (!item) {
-      return Promise.resolve({
-        index: itemId,
-        isFolder: false,
-        data: `Unknown Item: ${String(itemId)}` as T,
-      })
-    }
-    return Promise.resolve(item)
-  }
-
-  public async onChangeItemChildren(
-    itemId: TreeItemIndex,
-    newChildren: TreeItemIndex[],
-  ) {
-    if (this.items[itemId]) {
-      this.items[itemId].children = newChildren
-      await this.onDidChangeTreeDataEmitter.emit([itemId])
-    }
-  }
-
-  public onDidChangeTreeData(
-    listener: (changedItemIds: TreeItemIndex[]) => void,
-  ) {
-    const handlerId = this.onDidChangeTreeDataEmitter.on((payload) => {
-      listener(payload)
-    })
-    return {
-      dispose: () => {
-        this.onDidChangeTreeDataEmitter.off(handlerId)
-      },
-    }
-  }
-
-  public async onRenameItem(item: TreeItem<T>, name: string): Promise<void> {
-    if (this.setItemName) {
-      this.items[item.index] = this.setItemName(item, name)
-    }
-    return Promise.resolve()
-  }
 }
