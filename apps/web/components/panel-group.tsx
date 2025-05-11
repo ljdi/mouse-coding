@@ -1,16 +1,16 @@
 'use client'
 
 import {
-    ResizableHandle,
-    ResizablePanel,
-    ResizablePanelGroup,
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
 } from '@mc/ui/components/resizable'
-import { FC, Fragment, ReactNode } from 'react'
+import { FC, Fragment, isValidElement } from 'react'
 
 interface PanelWrapperProps {
   direction?: 'horizontal' | 'vertical'
   defaultSize?: number[]
-  views: ReactNode[]
+  views: React.ReactNode[]
   onLayout?: (sizes: number[]) => void
 }
 
@@ -28,8 +28,8 @@ export const PanelGroup: FC<PanelWrapperProps> = ({
     >
       {views.map(
         (view, index) =>
-          view && (
-            <Fragment key={index}>
+          isValidElement(view) && (
+            <Fragment key={view.key}>
               {index > 0 && <ResizableHandle className="w-0 after:w-0" />}
               <ResizablePanel defaultSize={defaultSize?.[index]}>
                 {view}

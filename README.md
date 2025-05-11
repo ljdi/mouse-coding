@@ -24,9 +24,9 @@
     - test: 定义函数的输入输出动态测试
 
 ## TODO
-
-- [ ] Dashboard
-  - [ ] create project
+- [ ] File System Error (init)
+- [-] Dashboard
+  - [*] create project
   - [ ] list projects
   - [ ] open project
   - [ ] Project

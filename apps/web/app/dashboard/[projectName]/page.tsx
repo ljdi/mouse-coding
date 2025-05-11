@@ -4,12 +4,12 @@ import { use } from 'react'
 export default function Page({
   params,
 }: {
-  params: Promise<{ projectId: string }>
+  params: Promise<{ projectName: string }>
 }) {
-  const { projectId } = use(params)
-  debugger
-  if (!projectId) {
+  const { projectName } = use(params)
+
+  if (!projectName) {
     return <div>Error: Project ID not found</div>
   }
-  return <ProjectPage projectId={projectId} />
+  return <ProjectPage projectName={projectName} />
 }

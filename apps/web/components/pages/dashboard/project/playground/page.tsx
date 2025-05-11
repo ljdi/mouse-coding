@@ -4,37 +4,27 @@ import { EditorViewCss } from '@/components/editor'
 import { EditorViewHtml } from '@/components/html-editor'
 import { EditorViewJs } from '@/components/js-editor'
 import { EditorViewJson } from '@/components/json-editor'
-import { DefaultLayout } from '@/components/layout/default'
-import { SideBar } from '@/components/side-bar'
-import { FileTree } from '@/components/sidebar-view-files'
-import { SidebarViewGit } from '@/components/sidebar-view-git'
-import { SidebarViewPackages } from '@/components/sidebar-view-packages'
-import { SidebarViewSearch } from '@/components/sidebar-view-search'
 import { EditorWithTabs } from '@/components/tabs'
 import {
   SiCss,
-  SiGit,
   SiHtml5,
   SiJavascript,
   SiJson,
 } from '@icons-pack/react-simple-icons'
 import { EditorMode } from '@mc/shared/constants/editor'
-import { LayoutId } from '@mc/shared/constants/layout'
-import { SidebarViewId } from '@mc/shared/constants/sidebar'
-import { EditorView, SidebarView } from '@mc/shared/types/view'
+import { EditorView } from '@mc/shared/types/view'
 import { useStore } from '@mc/store'
-import { Files, Package, Search } from 'lucide-react'
 import { FC, Suspense, useEffect, useState } from 'react'
 
 interface PlaygroundPageProps {
-  workspaceName: string
+  projectName: string
 }
-export const PlaygroundPage: FC<PlaygroundPageProps> = ({ workspaceName }) => {
-  const setWorkspace = useStore(state => state.setWorkspace)
+export const PlaygroundPage: FC<PlaygroundPageProps> = ({ projectName }) => {
+  const setupProject = useStore(state => state.setupProject)
 
   useEffect(() => {
-    setWorkspace(workspaceName)
-  }, [workspaceName, setWorkspace])
+    setupProject(projectName)
+  }, [projectName, setupProject])
 
   const [editorViews] = useState<EditorView[]>([
     {
@@ -75,41 +65,9 @@ export const PlaygroundPage: FC<PlaygroundPageProps> = ({ workspaceName }) => {
     },
   ])
 
-  const [sidebarViews] = useState<SidebarView[]>([
-    {
-      id: SidebarViewId.FILES,
-      icon: <Files />,
-      name: 'Files',
-      component: <FileTree />,
-    },
-    {
-      id: SidebarViewId.SEARCH,
-      icon: <Search />,
-      name: 'Search',
-      component: <SidebarViewSearch />,
-    },
-    {
-      id: SidebarViewId.GIT,
-      icon: <SiGit />,
-      name: 'Git',
-      component: <SidebarViewGit />,
-    },
-    {
-      id: SidebarViewId.PACKAGES,
-      icon: <Package />,
-      name: 'Packages',
-      component: <SidebarViewPackages />,
-    },
-  ])
-
   return (
-    <DefaultLayout
-      id={LayoutId.PLAYGROUND}
-      primarySideBar={<SideBar key="primary-sidebar" views={sidebarViews} />}
-    >
-      <Suspense fallback={<div>Loading...</div>}>
-        <EditorWithTabs key="editor-tabs" views={editorViews} />
-      </Suspense>
-    </DefaultLayout>
+    <Suspense fallback={<div>Loading...</div>}>
+      <EditorWithTabs key="editor-tabs" views={editorViews} />
+    </Suspense>
   )
 }
