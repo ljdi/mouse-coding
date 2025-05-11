@@ -1,0 +1,1 @@
+import createRollupConfig from './config'
