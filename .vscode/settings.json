@@ -2,21 +2,14 @@
   "editor.codeActionsOnSave": {
     // "source.addMissingImports.ts": "explicit",
     "source.fixAll.eslint": "explicit",
-    "source.fixAll.ts": "explicit",
-    "source.organizeImports": "always",
-    "source.organizeLinkDefinitions": "always"
+    // "source.fixAll.ts": "explicit",
+    // "source.organizeImports": "always",
+    // "source.organizeLinkDefinitions": "always"
     // "source.removeUnused.ts": "explicit",
     // "source.removeUnusedImports": "explicit",
     // "source.sortImports": "explicit"
   },
-  "editor.formatOnSave": false,
-  "eslint.rules.customizations": [
-    {
-      "rule": "@stylistic/*",
-      "fixable": true,
-      "severity": "info"
-    }
-  ],
+
   "typescript.tsdk": "node_modules/typescript/lib",
   "files.readonlyInclude": {
     "**/routeTree.gen.ts": true
