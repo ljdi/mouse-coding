@@ -2,7 +2,7 @@
   "editor.codeActionsOnSave": {
     // "source.addMissingImports.ts": "explicit",
     "source.fixAll.eslint": "explicit",
-    // "source.fixAll.ts": "explicit",
+    "source.fixAll.ts": "explicit",
     "source.organizeImports": "always",
     "source.organizeLinkDefinitions": "always"
     // "source.removeUnused.ts": "explicit",
@@ -18,4 +18,13 @@
     }
   ],
   "typescript.tsdk": "node_modules/typescript/lib",
+  "files.readonlyInclude": {
+    "**/routeTree.gen.ts": true
+  },
+  "files.watcherExclude": {
+    "**/routeTree.gen.ts": true
+  },
+  "search.exclude": {
+    "**/routeTree.gen.ts": true
+  }
 }
