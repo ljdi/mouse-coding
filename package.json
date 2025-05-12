@@ -18,12 +18,12 @@
     "prepare": "husky"
   },
   "devDependencies": {
-    "@mc/config": "^0.0.0",
     "husky": "^9.1.7",
     "lint-staged": "^15.5.0",
+    "prettier-plugin-organize-imports": "^4.1.0",
     "turbo": "^2.4.4"
   },
-  "packageManager": "npm@11.1.0",
+  "packageManager": "npm@10.9.2",
   "engines": {
     "node": ">=18"
   }

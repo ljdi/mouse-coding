@@ -1,5 +1,0 @@
-{
-  "exclude": ["node_modules"],
-  "extends": "@mc/config/typescript/nextjs.json",
-  "include": ["src"]
-}
