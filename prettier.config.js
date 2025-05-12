@@ -2,11 +2,9 @@
 export default {
   singleQuote: true,
   semi: false,
-  tabWidth: 2,
+  trailingComma: 'all',
+  jsxSingleQuote: true,
+  printWidth: 120,
 
-  plugins: [
-    'prettier-plugin-sort-json',
-    'prettier-plugin-tailwindcss',
-    'prettier-plugin-organize-imports',
-  ],
+  plugins: ['prettier-plugin-sort-json', 'prettier-plugin-tailwindcss'],
 }
