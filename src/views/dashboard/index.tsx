@@ -1,31 +1,12 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-
 import { Link } from '@tanstack/react-router'
-
 import { Loader2, Plus } from 'lucide-react'
-
-import {
-  type FC,
-  type FormEvent,
-  type ReactNode,
-  useCallback,
-  useEffect,
-  useState,
-} from 'react'
-
+import { type FC, type FormEvent, type ReactNode, useCallback, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-
 import { z } from 'zod'
 
 import { Button } from '@/components/ui/button'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import {
   Dialog,
   DialogClose,
@@ -36,17 +17,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { LoadingKey } from '@/constants/loading'
-import { useLoading } from '@/hooks/useLoading'
+import { ProjectAction } from '@/constants/action'
+import { useLoading } from '@/hooks/use-loading'
 import { useStore } from '@/store'
 import { getProjectNameList } from '@/utils/project'
 
@@ -62,27 +36,12 @@ const formSchema = z.object({
     .string()
     .min(2)
     .max(32)
-    .regex(
-      /^[a-zA-Z0-9_-]+$/,
-      'Workspace name can only contain letters, numbers, hyphens, and underscores'
-    ),
+    .regex(/^[a-zA-Z0-9_-]+$/, 'Workspace name can only contain letters, numbers, hyphens, and underscores'),
 })
 
-export const ProjectCreateFormDialog: FC<ProjectCreateFormProps> = ({
-  trigger,
-  open,
-  onOpenChange,
-  onSubmitted,
-}) => {
+export const ProjectCreateFormDialog: FC<ProjectCreateFormProps> = ({ trigger, open, onOpenChange, onSubmitted }) => {
   const createProject = useStore((state) => state.createProject)
-  const isLoading = useStore((state) => state.isLoading)
-  const createWorkspaceWithLoading = useLoading(
-    LoadingKey.PROJECT_CREATING,
-    async (projectName: string) => {
-      await createProject(projectName)
-    }
-  )
-  const createWorkspaceIsLoading = isLoading(LoadingKey.PROJECT_CREATING)
+  const [createProjectWithLoading, isLoading] = useLoading(createProject, ProjectAction.CREATE_PROJECT)
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -94,7 +53,8 @@ export const ProjectCreateFormDialog: FC<ProjectCreateFormProps> = ({
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     form
       .handleSubmit(async ({ projectName }: z.infer<typeof formSchema>) => {
-        await createWorkspaceWithLoading(projectName)
+        await Promise.all(createProjectWithLoading(projectName))
+
         onSubmitted()
 
         // 关闭 Dialog
@@ -104,11 +64,7 @@ export const ProjectCreateFormDialog: FC<ProjectCreateFormProps> = ({
         form.setError('projectName', {
           type: 'manual',
           message:
-            error instanceof Error
-              ? error.message
-              : typeof error === 'string'
-                ? error
-                : 'Failed to create project',
+            error instanceof Error ? error.message : typeof error === 'string' ? error : 'Failed to create project',
         })
       })
   }
@@ -122,8 +78,7 @@ export const ProjectCreateFormDialog: FC<ProjectCreateFormProps> = ({
         <DialogHeader>
           <DialogTitle>Create workspace</DialogTitle>
           <DialogDescription>
-            Choose a unique name for your workspace. This will help identify it
-            within your projects.
+            Choose a unique name for your workspace. This will help identify it within your projects.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -142,10 +97,8 @@ export const ProjectCreateFormDialog: FC<ProjectCreateFormProps> = ({
               )}
             />
             <DialogFooter>
-              <Button type='submit' disabled={createWorkspaceIsLoading}>
-                {createWorkspaceIsLoading && (
-                  <Loader2 className='animate-spin' />
-                )}
+              <Button type='submit' disabled={isLoading}>
+                {isLoading && <Loader2 className='animate-spin' />}
                 Create
               </Button>
               <DialogClose asChild>
@@ -230,10 +183,7 @@ export const Dashboard: FC = () => {
         </div>
         <div className='flex flex-wrap'>
           {projectNameList.map((name) => (
-            <div
-              className='w-full p-2 sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5 2xl:w-1/6'
-              key={name}
-            >
+            <div className='w-full p-2 sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5 2xl:w-1/6' key={name}>
               <Link to={`/dashboard/${name}/playground`}>
                 <ProjectCard name={name} />
               </Link>

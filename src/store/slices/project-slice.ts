@@ -1,12 +1,12 @@
 import * as pathModule from '@zenfs/core/path'
 import type { StateCreator } from 'zustand'
 
+import { createDirectory, exists, readDirectoryTree } from '@/lib/file-system'
 import { PackageManager } from '@/lib/package-manager'
 import { type FileStructure, type Directory, FileStructureType } from '@/types/fs'
-import { createDirectory, exists, readDirectoryTree } from '@/utils/fs'
 import { getProjectPath } from '@/utils/project'
 
-export interface WorkspaceSlice {
+export interface ProjectSlice {
   projectPath?: string
   projectFileTree?: Directory
   packageManager?: PackageManager
@@ -16,7 +16,7 @@ export interface WorkspaceSlice {
   createProject: (projectName: string) => Promise<void>
 }
 
-export const createWorkspaceSlice: StateCreator<WorkspaceSlice> = (set, get) => ({
+export const createProjectSlice: StateCreator<ProjectSlice> = (set, get) => ({
   setupProject: (projectName?: string) => {
     if (projectName) {
       const projectPath = getProjectPath(projectName)

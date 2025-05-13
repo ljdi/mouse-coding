@@ -1,8 +1,8 @@
 export const FileStructureType = {
-  UNKNOWN: 0,
-  FILE: 1,
-  DIRECTORY: 2,
-  LINK: 3,
+  UNKNOWN: 'UNKNOWN',
+  FILE: 'FILE',
+  DIRECTORY: 'DIRECTORY',
+  LINK: 'LINK',
 } as const
 
 export type FileType = (typeof FileStructureType)[keyof typeof FileStructureType]

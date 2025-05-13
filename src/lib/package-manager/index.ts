@@ -5,7 +5,7 @@ import {
   DEFAULT_REGISTRY_URL,
   PACKAGE_JSON_FILE_NAME,
   PM_CONFIG_FILE_PATH,
-} from '@/constants/fs'
+} from '@/constants/env'
 
 interface ConfigData {
   registry: string
