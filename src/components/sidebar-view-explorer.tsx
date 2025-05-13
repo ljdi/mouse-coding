@@ -1,15 +1,39 @@
-// import { Input } from '@/components/ui/input'
 import * as pathModule from '@zenfs/core/path'
 import { ChevronRight, File, FolderIcon } from 'lucide-react'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, type FC } from 'react'
 import { ControlledTreeEnvironment, Tree, type TreeRef, type TreeViewState } from 'react-complex-tree'
 
+import {
+  ConfigurableContextMenu,
+  type ConfigurableContextMenuItem,
+  type OnSelect,
+} from '@/components/configurable-context-menu'
+import { Input } from '@/components/ui/input'
+import { FileSystemAction } from '@/constants/action'
+import { treeContainerContextMenuItems } from '@/constants/sidebar'
+import { useFileTreeTempItems } from '@/hooks/useFileTreeTempItems'
+import { writeFile } from '@/lib/file-system'
 import { cn } from '@/lib/utils'
 import { useStore } from '@/store'
-import { writeFile } from '@/utils/fs'
+import type { FileTreeEditing } from '@/types/view'
+
+const TreeItemInput: FC<{ value: string; onChange: (value: string) => void }> = ({ value, onChange }) => {
+  return (
+    <div className='flex items-center gap-1'>
+      <Input
+        className='w-full'
+        value={value}
+        onInput={(e) => {
+          console.log(e, 'onInput')
+          onChange(e.target.value)
+        }}
+        autoFocus
+      />
+    </div>
+  )
+}
 
 const TREE_ID = 'project'
-
 const viewStateInitial = {
   [TREE_ID]: {
     focusedItem: undefined,
@@ -21,9 +45,13 @@ const viewStateInitial = {
 export const SidebarViewExplorer = () => {
   const projectPath = useStore((state) => state.projectPath)
   const projectFileTree = useStore((state) => state.projectFileTree)
+  const createFile = useStore((state) => state.createFile)
+  const createDirectory = useStore((state) => state.createDirectory)
   const getProjectFileTree = useStore((state) => state.getProjectFileTree)
   const items = useStore((state) => state.fileTreeDataSourceItems)
   const convertFileTreeDataSourceItems = useStore((state) => state.convertFileTreeDataSourceItems)
+  const [editing, setEditing] = useState<FileTreeEditing | undefined>()
+  const tempItems = useFileTreeTempItems(editing)
 
   useEffect(() => {
     getProjectFileTree().catch(console.error)
@@ -39,6 +67,55 @@ export const SidebarViewExplorer = () => {
   const tree = useRef<TreeRef>(null)
   const [viewState, setViewState] = useState<TreeViewState<string>>(viewStateInitial)
 
+  const createContextMenuSelectHandler = (baseDir: string): OnSelect => {
+    return async (event: Event, item: ConfigurableContextMenuItem) => {
+      switch (item.type) {
+        case 'item':
+          {
+            const index = crypto.randomUUID()
+            if (item.id === 'create-file') {
+              // await createFile(pathModule.join(baseDir))
+              setEditing({
+                index,
+                path: pathModule.join(baseDir),
+                name: '123',
+                type: FileSystemAction.CREATE_FILE,
+              })
+              console.log(event, '-0-------', baseDir)
+            } else if (item.id === 'create-folder') {
+              // await createDirectory(pathModule.join(baseDir, ))
+              console.log(event, '-1-------')
+              setEditing({
+                index,
+                path: pathModule.join(baseDir),
+                name: '456',
+                type: FileSystemAction.CREATE_DIRECTORY,
+              })
+            }
+          }
+          break
+        default:
+          break
+      }
+    }
+  }
+
+  // TODO: 单选多选
+  const createContextMenuCheckedChangeHandler = (baseDir: string) => {
+    return (checked: boolean, item: ConfigurableContextMenuItem) => {
+      console.log('createContextMenuCheckedChangeHandler', baseDir, checked, item)
+    }
+  }
+  const createContextMenuValueChangeHandler = (baseDir: string) => {
+    return (value: string, item: ConfigurableContextMenuItem) => {
+      console.log(value, 'createContextMenuValueChangeHandler', baseDir, value, item)
+    }
+  }
+
+  if (!projectPath) {
+    return undefined
+  }
+
   return (
     <div className='mx-auto flex h-screen w-full flex-col gap-1'>
       <button
@@ -51,7 +128,7 @@ export const SidebarViewExplorer = () => {
         create file
       </button>
       <ControlledTreeEnvironment
-        items={items}
+        items={editing ? tempItems : items}
         getItemTitle={(item) => item.data}
         canSearch={false}
         canSearchByStartingTyping={false}
@@ -95,14 +172,21 @@ export const SidebarViewExplorer = () => {
         }}
         renderTreeContainer={({ children, containerProps }) => {
           return (
-            <div {...containerProps} className='tree-container border-border border p-[1px]'>
-              {children}
+            <div {...containerProps} className='h-full'>
+              <ConfigurableContextMenu
+                items={treeContainerContextMenuItems}
+                onSelect={createContextMenuSelectHandler(projectPath)}
+                onCheckedChange={createContextMenuCheckedChangeHandler(projectPath)}
+                onValueChange={createContextMenuValueChangeHandler(projectPath)}
+              >
+                {children}
+              </ConfigurableContextMenu>
             </div>
           )
         }}
-        // renderLiveDescriptorContainer={({}) => <></>}
-        renderItemsContainer={({ children, containerProps }) => {
-          return <ul {...containerProps}>{children}</ul>
+        renderRenameInput={({ item, inputProps }) => {
+          console.log('renderRenameInput', item, inputProps)
+          return <input value={item.data} onInput={(value) => console.log(value, 'onChange')} />
         }}
         renderItem={({ title, item, context, depth, children }) => {
           const indentation = 10 * depth

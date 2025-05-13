@@ -1,11 +1,12 @@
 import type { ReactNode } from 'react'
 
-import { EditorMode } from '@/constants/editor'
-import { SidebarViewId } from '@/constants/sidebar'
+import type { FileSystemAction } from '@/constants/action'
+import { type EditorModeType } from '@/constants/editor'
+import { type SidebarViewIdType } from '@/constants/sidebar'
 
-export type ViewId = string | number | symbol
+type ViewId = string | number | symbol
 
-export interface View {
+interface View {
   id: ViewId
   name: string
   icon: ReactNode
@@ -15,10 +16,18 @@ export interface View {
 export interface EditorView extends View {
   path: string
   content: string
-  mode: EditorMode
+  mode: EditorModeType
 }
 
 export interface SidebarView extends View {
-  id: SidebarViewId
+  id: SidebarViewIdType
   icon: ReactNode
+}
+
+export interface FileTreeEditing {
+  index: string
+  path: string
+  name: string
+  oldName?: string
+  type: typeof FileSystemAction.CREATE_FILE | typeof FileSystemAction.CREATE_DIRECTORY | typeof FileSystemAction.RENAME
 }

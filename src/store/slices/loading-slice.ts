@@ -1,45 +1,48 @@
 import type { StateCreator } from 'zustand'
 
-import type { LoadingKey } from '@/constants/loading'
+import type { LoadingInstance, LoadingInstanceKey, LoadingInstanceMap } from '@/types/loading'
 
 export interface LoadingSlice {
-  counters: Record<LoadingKey | string, number>
-  instances: Record<LoadingKey | string, string[]>
-  addInstance: (key: LoadingKey, id: string) => void
-  removeInstance: (key: LoadingKey, id: string) => void
-  isLoading: (key: LoadingKey) => boolean
+  loadingInstanceMap: LoadingInstanceMap
+  addLoadingInstance: (instance: LoadingInstance) => void
+  removeLoadingInstance: (instanceLike: Partial<LoadingInstance>) => void
+  getInstances: (instanceLike: Partial<LoadingInstance>) => LoadingInstance[]
+  isInstanceLoading: (instanceLike: Partial<LoadingInstance>) => boolean
 }
 
 export const createLoadingSlice: StateCreator<LoadingSlice> = (set, get) => ({
-  counters: {},
-  instances: {},
+  loadingInstanceMap: new Map<string, LoadingInstance>(),
 
-  addInstance: (key, id) => {
-    set((state) => ({
-      counters: {
-        ...state.counters,
-        [key]: (state.counters[key] ?? 0) + 1,
-      },
-      instances: {
-        ...state.instances,
-        [key]: [...(state.instances[key] ?? []), id],
-      },
-    }))
+  addLoadingInstance: (instance) => {
+    const newMap = new Map<string, LoadingInstance>(get().loadingInstanceMap)
+    newMap.set(instance.id, instance)
+
+    set({ loadingInstanceMap: newMap })
   },
-  removeInstance: (key, id) => {
-    set((state) => ({
-      counters: {
-        ...state.counters,
-        [key]: Math.max((state.counters[key] ?? 0) - 1, 0),
-      },
-      instances: {
-        ...state.instances,
-        [key]: (state.instances[key] ?? []).filter((i) => i !== id),
-      },
-    }))
+  removeLoadingInstance: (instanceLike) => {
+    const { loadingInstanceMap, getInstances } = get()
+    const idsToRemove = getInstances(instanceLike).map(({ id }) => id)
+    const newMap = new Map<string, LoadingInstance>(loadingInstanceMap)
+    idsToRemove.forEach((id) => newMap.delete(id))
+
+    set({ loadingInstanceMap: newMap })
   },
 
-  isLoading: (key) => {
-    return (get().counters[key] ?? 0) > 0
+  isInstanceLoading: (instanceLike) => {
+    const { loadingInstanceMap, getInstances } = get()
+    if (!instanceLike) {
+      return Object.keys(loadingInstanceMap).length > 0
+    }
+    return getInstances(instanceLike).length > 0
+  },
+
+  getInstances: (instanceLike) => {
+    const { loadingInstanceMap } = get()
+    return Array.from(loadingInstanceMap.values()).filter((instance) =>
+      Object.keys(instanceLike).every(
+        // 如果传入的属性值为 undefined，则不进行比较
+        (key) => key === undefined || instance[key as LoadingInstanceKey] === instanceLike[key as LoadingInstanceKey]
+      )
+    )
   },
 })
