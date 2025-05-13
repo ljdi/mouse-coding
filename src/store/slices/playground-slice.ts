@@ -21,6 +21,8 @@ export const createPlaygroundSlice: StateCreator<PlaygroundSlice> = (set) => ({
       children: [],
       isFolder: true,
       data: name,
+      canMove: true,
+      canRename: true,
     }
 
     // Recursively convert file tree

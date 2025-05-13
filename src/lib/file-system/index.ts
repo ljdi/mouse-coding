@@ -1,4 +1,4 @@
-import * as pathModule from '@zenfs/core/path.js'
+import * as pathModule from '@zenfs/core/path'
 import * as fileSystemModule from '@zenfs/core/promises'
 
 import { FileStructureType, type FileStructure, type Directory } from '@/types/fs'
@@ -7,8 +7,7 @@ const DEFAULT_ENCODING = 'utf-8'
 
 export const readDirectoryTree = async <T extends FileStructure = Directory>(path: string): Promise<T[]> => {
   // 组装成绝对路径
-  const exists = await fileSystemModule.exists(path)
-  if (!exists) {
+  if (!await exists(path)) {
     throw Error(`${path} does not exist`)
   }
 
@@ -59,12 +58,13 @@ export const createDirectory = async (path: string) => {
   await fileSystemModule.mkdir(path, { recursive: true })
 }
 
-export const createFile = async (path: string, content = '') => {
-  const dirPath = pathModule.dirname(path)
-  await createDirectory(dirPath)
-  await fileSystemModule.writeFile(path, content, {
-    encoding: DEFAULT_ENCODING,
-  })
+export const createFile = async (path: string) => {
+  if (await exists(path)) {
+    throw new Error('File already exists')
+  }
+  const directoryPath = pathModule.dirname(path)
+  await createDirectory(directoryPath)
+  await writeFile(path, '')
 }
 export const removeFile = async (path: string) => {
   if (!(await exists(path))) {
@@ -100,8 +100,10 @@ export const readFile = async (path: string) => {
   return content
 }
 export const writeFile = async (path: string, content: string) => {
+  if (!(await exists(path))) {
+    await createFile(path)
+  }
   await fileSystemModule.writeFile(path, content, {
     encoding: DEFAULT_ENCODING,
   })
-  return path
 }

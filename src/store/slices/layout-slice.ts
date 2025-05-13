@@ -1,9 +1,9 @@
 import type { StateCreator } from 'zustand'
 
-import { LayoutId } from '@/constants/layout'
+import { LayoutId, type LayoutIdType } from '@/constants/layout'
 
 export interface LayoutSlice {
-  defaultSizeMap: Partial<Record<LayoutId, number[]>>
+  defaultSizeMap: Partial<Record<LayoutIdType, number[]>>
 
   isPrimarySideBarCollapsed: boolean
   togglePrimarySideBar: () => void

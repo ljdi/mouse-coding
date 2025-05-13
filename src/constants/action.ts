@@ -1,0 +1,24 @@
+export const FileSystemAction = {
+  INITIALIZE_FILE_SYSTEM: 'INITIALIZE_FILE_SYSTEM',
+  CREATE_FILE: 'CREATE_FILE',
+  CREATE_DIRECTORY: 'CREATE_DIRECTORY',
+  REMOVE: 'REMOVE',
+  RENAME: 'RENAME',
+} as const
+
+export const ProjectAction = {
+  CREATE_PROJECT: 'CREATE_PROJECT',
+  REMOVE_PROJECT: 'REMOVE_PROJECT',
+  RENAME_PROJECT: 'RENAME_PROJECT',
+} as const
+
+export const PackageAction = {
+  INSTALL_PACKAGE: 'INSTALL_PACKAGE',
+  UNINSTALL_PACKAGE: 'UNINSTALL_PACKAGE',
+  UPDATE_PACKAGE: 'UPDATE_PACKAGE',
+  REMOVE_PACKAGE: 'REMOVE_PACKAGE',
+} as const
+
+export const RequestLoadingType = { REQUEST: 'REQUEST' } as const
+
+export const UnknownLoadingType = { UNKNOWN: 'UNKNOWN' } as const
