@@ -1,4 +1,4 @@
-import { useCallback, useState, useRef, useEffect } from 'react'
+import { useCallback, useState, useEffect } from 'react'
 
 import { UnknownLoadingType } from '@/constants/action'
 import { useStore } from '@/store'
