@@ -45,8 +45,8 @@ const viewStateInitial = {
 export const SidebarViewExplorer = () => {
   const projectPath = useStore((state) => state.projectPath)
   const projectFileTree = useStore((state) => state.projectFileTree)
-  const createFile = useStore((state) => state.createFile)
-  const createDirectory = useStore((state) => state.createDirectory)
+  // const createFile = useStore((state) => state.createFile)
+  // const createDirectory = useStore((state) => state.createDirectory)
   const getProjectFileTree = useStore((state) => state.getProjectFileTree)
   const items = useStore((state) => state.fileTreeDataSourceItems)
   const convertFileTreeDataSourceItems = useStore((state) => state.convertFileTreeDataSourceItems)
