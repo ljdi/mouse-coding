@@ -1,6 +1,6 @@
 import * as pathModule from '@zenfs/core/path'
 import { ChevronRight, File, FolderIcon } from 'lucide-react'
-import { useEffect, useRef, useState, type FC } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { ControlledTreeEnvironment, Tree, type TreeRef, type TreeViewState } from 'react-complex-tree'
 
 import {

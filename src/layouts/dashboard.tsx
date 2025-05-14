@@ -14,8 +14,12 @@ export const DashboardLayout: FC<DefaultLayoutProps> = ({ search }) => {
   const isFsInitialized = useStore((state) => state.isFsInitialized)
   const initializeFs = useStore((state) => state.initializeFs)
   useEffect(() => {
+    if (isFsInitialized) {
+      return
+    }
+
     initializeFs().catch(console.error)
-  }, [initializeFs])
+  }, [isFsInitialized, initializeFs])
 
   return (
     <div className='flex h-screen flex-col'>
@@ -25,9 +29,7 @@ export const DashboardLayout: FC<DefaultLayoutProps> = ({ search }) => {
             <Mouse className='text-neutral-950 dark:text-neutral-50' />
           </Button>
         </div>
-        <div className='flex flex-1 items-center justify-center space-x-4'>
-          {search}
-        </div>
+        <div className='flex flex-1 items-center justify-center space-x-4'>{search}</div>
         <div className='flex items-center space-x-4'>
           <ModeToggle />
           <SidebarController />
