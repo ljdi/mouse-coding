@@ -3,7 +3,7 @@ import * as pathModule from '@zenfs/core/path'
 import { ROOT } from '@/constants/env'
 import { readDirectory } from '@/lib/file-system'
 
-export const getProjectNameList = async () => {
+export const getProjectIds = async () => {
   return (await readDirectory(ROOT)).filter((dir) => !dir.startsWith('.'))
 }
 

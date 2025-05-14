@@ -22,7 +22,7 @@ import { Input } from '@/components/ui/input'
 import { ProjectAction } from '@/constants/action'
 import { useLoading } from '@/hooks/use-loading'
 import { useStore } from '@/store'
-import { getProjectNameList } from '@/utils/project'
+import { getProjectIds } from '@/utils/project'
 
 interface ProjectCreateFormProps {
   trigger: ReactNode
@@ -133,17 +133,17 @@ export const ProjectCard: FC<{
 
 export const Dashboard: FC = () => {
   const isFsInitialized = useStore((state) => state.isFsInitialized)
-  const [projectNameList, setProjectNameList] = useState<string[]>([])
+  const [projectIds, setProjectIds] = useState<string[]>([])
 
-  const fetchProjectNameList = useCallback(() => {
-    getProjectNameList().then(setProjectNameList).catch(console.error)
+  const fetchProjectIds = useCallback(() => {
+    getProjectIds().then(setProjectIds).catch(console.error)
   }, [])
 
   useEffect(() => {
     if (isFsInitialized) {
-      fetchProjectNameList()
+      fetchProjectIds()
     }
-  }, [isFsInitialized, fetchProjectNameList])
+  }, [isFsInitialized, fetchProjectIds])
 
   const [open, setOpen] = useState(false)
 
@@ -176,15 +176,15 @@ export const Dashboard: FC = () => {
                 open={open}
                 trigger='Create'
                 onOpenChange={setOpen}
-                onSubmitted={fetchProjectNameList}
+                onSubmitted={fetchProjectIds}
               />
             </Button>
           </div>
         </div>
         <div className='flex flex-wrap'>
-          {projectNameList.map((name) => (
+          {projectIds.map((name) => (
             <div className='w-full p-2 sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5 2xl:w-1/6' key={name}>
-              <Link to={`/dashboard/${name}/playground`}>
+              <Link to='/dashboard/$projectId/playground' params={{ projectId: name }}>
                 <ProjectCard name={name} />
               </Link>
             </div>
