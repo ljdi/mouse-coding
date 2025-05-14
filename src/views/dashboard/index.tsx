@@ -34,9 +34,9 @@ interface ProjectCreateFormProps {
 const formSchema = z.object({
   projectName: z
     .string()
-    .min(2)
+    .min(1)
     .max(32)
-    .regex(/^[a-zA-Z0-9_-]+$/, 'Workspace name can only contain letters, numbers, hyphens, and underscores'),
+    .regex(/^[a-zA-Z0-9_-]+$/, 'Project name can only contain letters, numbers, hyphens, and underscores'),
 })
 
 export const ProjectCreateFormDialog: FC<ProjectCreateFormProps> = ({ trigger, open, onOpenChange, onSubmitted }) => {
