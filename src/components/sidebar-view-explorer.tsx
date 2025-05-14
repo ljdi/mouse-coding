@@ -8,7 +8,7 @@ import {
   type ConfigurableContextMenuItem,
   type OnSelect,
 } from '@/components/configurable-context-menu'
-import { Input } from '@/components/ui/input'
+// import { Input } from '@/components/ui/input'
 import { FileSystemAction } from '@/constants/action'
 import { treeContainerContextMenuItems } from '@/constants/sidebar'
 import { useFileTreeTempItems } from '@/hooks/useFileTreeTempItems'
@@ -17,7 +17,7 @@ import { cn } from '@/lib/utils'
 import { useStore } from '@/store'
 import type { FileTreeEditing } from '@/types/view'
 
-const TreeItemInput: FC<{ value: string; onChange: (value: string) => void }> = ({ value, onChange }) => {
+/* const TreeItemInput: FC<{ value: string; onChange: (value: string) => void }> = ({ value, onChange }) => {
   return (
     <div className='flex items-center gap-1'>
       <Input
@@ -32,7 +32,7 @@ const TreeItemInput: FC<{ value: string; onChange: (value: string) => void }> = 
     </div>
   )
 }
-
+ */
 const TREE_ID = 'project'
 const viewStateInitial = {
   [TREE_ID]: {

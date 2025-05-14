@@ -1,10 +1,12 @@
 import * as pathModule from '@zenfs/core/path'
 
 import { ROOT } from '@/constants/env'
-import { readDirectory } from '@/lib/file-system'
+import { readDirectoryWithFileTypes } from '@/lib/file-system'
 
 export const getProjectIds = async () => {
-  return (await readDirectory(ROOT)).filter((dir) => !dir.startsWith('.'))
+  const directories = await readDirectoryWithFileTypes(ROOT)
+  const projectNames = directories.filter((dir) => !dir.startsWith('.'))
+  return projectNames
 }
 
 export const getProjectPath = (projectName: string) => {
