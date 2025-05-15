@@ -42,12 +42,12 @@ export class Config implements ConfigData {
 }
 
 export class PackageManager {
-  private static config = new Config()
-
+  private config: Config
   public cwd: string
 
   constructor (cwd: string) {
     this.cwd = cwd
+    this.config = new Config()
   }
 
   public async init () {

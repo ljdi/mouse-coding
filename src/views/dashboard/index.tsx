@@ -72,13 +72,18 @@ export const ProjectCreateFormDialog: FC<ProjectCreateFormProps> = ({ trigger, o
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>
-        <div className='flex-1'>{trigger}</div>
+        <div className='flex-1'>
+          <Button size='sm'>
+            <Plus className='mr-1 h-4 w-4' />
+            {trigger}
+          </Button>
+        </div>
       </DialogTrigger>
       <DialogContent className='sm:max-w-[425px]'>
         <DialogHeader>
-          <DialogTitle>Create workspace</DialogTitle>
+          <DialogTitle>Create Project</DialogTitle>
           <DialogDescription>
-            Choose a unique name for your workspace. This will help identify it within your projects.
+            Choose a unique name for your project. This will help identify it within your projects.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -88,7 +93,7 @@ export const ProjectCreateFormDialog: FC<ProjectCreateFormProps> = ({ trigger, o
               name='projectName'
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Workspace Name</FormLabel>
+                  <FormLabel>Project Name</FormLabel>
                   <FormControl>
                     <Input placeholder='hello-world' {...field} />
                   </FormControl>
@@ -170,15 +175,12 @@ export const Dashboard: FC = () => {
                 </Button>
               </div> */}
 
-            <Button size='sm'>
-              <Plus className='mr-1 h-4 w-4' />
-              <ProjectCreateFormDialog
-                open={open}
-                trigger='Create'
-                onOpenChange={setOpen}
-                onSubmitted={fetchProjectIds}
-              />
-            </Button>
+            <ProjectCreateFormDialog
+              open={open}
+              trigger='Create'
+              onOpenChange={setOpen}
+              onSubmitted={fetchProjectIds}
+            />
           </div>
         </div>
         <div className='flex flex-wrap'>

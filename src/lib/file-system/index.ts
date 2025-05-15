@@ -45,9 +45,14 @@ export const readDirectoryTree = async <T extends FileStructure = Directory>(pat
 }
 
 export const readDirectoryWithFileTypes = async (path: string) => {
-  const direntList = await fileSystemModule.readdir(path, { withFileTypes: true })
+  const direntList = await fileSystemModule.readdir(path, {
+    encoding: 'utf8',
+    withFileTypes: true /* , recursive: true */,
+  })
   const directories = direntList.filter((dirent) => dirent.isDirectory())
-  return directories.map((dirent) => dirent.name)
+  console.log(directories)
+
+  return directories.map((dirent) => dirent.path)
 }
 
 export const exists = async (path: string) => {

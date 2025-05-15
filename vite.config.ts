@@ -9,7 +9,15 @@ import { defineConfig } from 'vite'
 export default defineConfig({
   plugins: [
     TanStackRouterVite({ target: 'react', autoCodeSplitting: true }),
-    react(),
+    react({
+      tsDecorators: true,
+      useAtYourOwnRisk_mutateSwcOptions: (options) => {
+        console.log('options', options)
+        if (!options.jsc) options.jsc = {}
+        if (!options.jsc.transform) options.jsc.transform = {}
+        options.jsc.transform.decoratorVersion = '2022-03'
+      }
+    }),
     tailwindcss(),
   ],
   resolve: {

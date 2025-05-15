@@ -1,7 +1,8 @@
 export const ROOT = '/'
-export const CONFIG_PATH = '/.config'
+export const HOME = '/home'
+export const CONFIG_PATH = '/config'
 export const PM_CONFIG_FILE_PATH = `${CONFIG_PATH}/pm.json`
-export const STORE_PATH = '/.store'
+export const STORE_PATH = '/store'
 export const STORE_CACHE_PATH = `${STORE_PATH}/cache`
 export const DEFAULT_REGISTRY_URL = 'https://registry.npmmirror.com'
 
