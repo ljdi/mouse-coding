@@ -32,7 +32,8 @@ export const createProjectSlice: StateCreator<ProjectSlice> = (set, get) => ({
     }
   },
 
-  createProject: async (projectPath: string) => {
+  createProject: async (projectName: string) => {
+    const projectPath = getProjectPath(projectName)
     if (await exists(projectPath)) {
       throw new Error('Project already exists')
     }

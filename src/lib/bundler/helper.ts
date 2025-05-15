@@ -13,13 +13,13 @@ import {
 } from '@zenfs/core/promises'
 
 async function existsInNode (filePath: string) {
-  try {
-    await accessInNode(filePath)
-    return true
-  } catch (e) {
-    if ((e as Error).code === 'ENOENT') return false
-    throw e
-  }
+  // try {
+  await accessInNode(filePath)
+  return true
+  // } catch (e) {
+  //   if ((e as Error).code === 'ENOENT') return false
+  //   throw e
+  // }
 }
 
 export const isInBrowser = typeof window !== 'undefined'

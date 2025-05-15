@@ -7,7 +7,7 @@ const DEFAULT_ENCODING = 'utf-8'
 
 export const readDirectoryTree = async <T extends FileStructure = Directory>(path: string): Promise<T[]> => {
   // 组装成绝对路径
-  if (!await exists(path)) {
+  if (!(await exists(path))) {
     throw Error(`${path} does not exist`)
   }
 
@@ -44,10 +44,15 @@ export const readDirectoryTree = async <T extends FileStructure = Directory>(pat
   return fileList
 }
 
-export const readDirectory = async (path: string) => {
-  return (await fileSystemModule.readdir(path, { withFileTypes: true }))
-    .filter((dirent) => dirent.isDirectory())
-    .map((dirent) => dirent.name)
+export const readDirectoryWithFileTypes = async (path: string) => {
+  const direntList = await fileSystemModule.readdir(path, {
+    encoding: 'utf8',
+    withFileTypes: true /* , recursive: true */,
+  })
+  const directories = direntList.filter((dirent) => dirent.isDirectory())
+  console.log(directories)
+
+  return directories.map((dirent) => dirent.path)
 }
 
 export const exists = async (path: string) => {
@@ -55,6 +60,10 @@ export const exists = async (path: string) => {
 }
 
 export const createDirectory = async (path: string) => {
+  if (await exists(path)) {
+    throw new Error('Directory already exists')
+  }
+
   await fileSystemModule.mkdir(path, { recursive: true })
 }
 
@@ -62,8 +71,7 @@ export const createFile = async (path: string) => {
   if (await exists(path)) {
     throw new Error('File already exists')
   }
-  const directoryPath = pathModule.dirname(path)
-  await createDirectory(directoryPath)
+
   await writeFile(path, '')
 }
 export const removeFile = async (path: string) => {
@@ -100,8 +108,9 @@ export const readFile = async (path: string) => {
   return content
 }
 export const writeFile = async (path: string, content: string) => {
-  if (!(await exists(path))) {
-    await createFile(path)
+  const directoryPath = pathModule.dirname(path)
+  if (!(await exists(directoryPath))) {
+    throw Error(`${directoryPath} does not exist`)
   }
   await fileSystemModule.writeFile(path, content, {
     encoding: DEFAULT_ENCODING,

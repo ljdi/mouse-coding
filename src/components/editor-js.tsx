@@ -4,7 +4,7 @@ import ts from 'typescript'
 export const EditorViewJs = () => {
   useEffect(() => {
     // const tsCode = 'let num: number = 123;'
-    console.log('currentDirectory', ts.sys.newLine)
+    // console.log('currentDirectory', ts.sys.newLine)
     const originalCode = 'const greet = (name: string) => "Hello " + name;'
     const ast = getAST(originalCode)
     console.log('ast', ast)

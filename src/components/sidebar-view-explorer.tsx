@@ -1,6 +1,6 @@
 import * as pathModule from '@zenfs/core/path'
 import { ChevronRight, File, FolderIcon } from 'lucide-react'
-import { useEffect, useRef, useState, type FC } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { ControlledTreeEnvironment, Tree, type TreeRef, type TreeViewState } from 'react-complex-tree'
 
 import {
@@ -8,7 +8,7 @@ import {
   type ConfigurableContextMenuItem,
   type OnSelect,
 } from '@/components/configurable-context-menu'
-import { Input } from '@/components/ui/input'
+// import { Input } from '@/components/ui/input'
 import { FileSystemAction } from '@/constants/action'
 import { treeContainerContextMenuItems } from '@/constants/sidebar'
 import { useFileTreeTempItems } from '@/hooks/useFileTreeTempItems'
@@ -17,7 +17,7 @@ import { cn } from '@/lib/utils'
 import { useStore } from '@/store'
 import type { FileTreeEditing } from '@/types/view'
 
-const TreeItemInput: FC<{ value: string; onChange: (value: string) => void }> = ({ value, onChange }) => {
+/* const TreeItemInput: FC<{ value: string; onChange: (value: string) => void }> = ({ value, onChange }) => {
   return (
     <div className='flex items-center gap-1'>
       <Input
@@ -32,7 +32,7 @@ const TreeItemInput: FC<{ value: string; onChange: (value: string) => void }> = 
     </div>
   )
 }
-
+ */
 const TREE_ID = 'project'
 const viewStateInitial = {
   [TREE_ID]: {
@@ -45,8 +45,8 @@ const viewStateInitial = {
 export const SidebarViewExplorer = () => {
   const projectPath = useStore((state) => state.projectPath)
   const projectFileTree = useStore((state) => state.projectFileTree)
-  const createFile = useStore((state) => state.createFile)
-  const createDirectory = useStore((state) => state.createDirectory)
+  // const createFile = useStore((state) => state.createFile)
+  // const createDirectory = useStore((state) => state.createDirectory)
   const getProjectFileTree = useStore((state) => state.getProjectFileTree)
   const items = useStore((state) => state.fileTreeDataSourceItems)
   const convertFileTreeDataSourceItems = useStore((state) => state.convertFileTreeDataSourceItems)

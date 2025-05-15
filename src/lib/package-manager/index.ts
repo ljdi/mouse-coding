@@ -1,11 +1,7 @@
-import * as path from '@zenfs/core/path'
-import * as fs from '@zenfs/core/promises'
+import * as pathModule from '@zenfs/core/path'
 
-import {
-  DEFAULT_REGISTRY_URL,
-  PACKAGE_JSON_FILE_NAME,
-  PM_CONFIG_FILE_PATH,
-} from '@/constants/env'
+import { DEFAULT_REGISTRY_URL, PACKAGE_JSON_FILE_NAME, PM_CONFIG_FILE_PATH } from '@/constants/env'
+import { createDirectory, exists, readFile, writeFile } from '@/lib/file-system'
 
 interface ConfigData {
   registry: string
@@ -13,6 +9,7 @@ interface ConfigData {
 
 export class Config implements ConfigData {
   private data: Partial<ConfigData> = {}
+
   constructor () {
     this.readConfigDataFromFile().catch(console.error)
   }
@@ -28,37 +25,44 @@ export class Config implements ConfigData {
 
   private async readConfigDataFromFile () {
     let config: Partial<ConfigData> = {}
-    if (await fs.exists(PM_CONFIG_FILE_PATH)) {
-      const fileContent = await fs.readFile(PM_CONFIG_FILE_PATH)
+    if (await exists(PM_CONFIG_FILE_PATH)) {
+      const fileContent = await readFile(PM_CONFIG_FILE_PATH)
       config = JSON.parse(fileContent.toString()) as Partial<ConfigData>
     }
     this.data = config
   }
 
   private async writeConfigDataToFile (config: Partial<ConfigData>) {
-    const configDir = path.dirname(PM_CONFIG_FILE_PATH)
-    if (!(await fs.exists(configDir))) {
-      await fs.mkdir(configDir, { recursive: true })
+    const configDir = pathModule.dirname(PM_CONFIG_FILE_PATH)
+    if (!(await exists(configDir))) {
+      await createDirectory(configDir)
     }
-    await fs.writeFile(PM_CONFIG_FILE_PATH, JSON.stringify(config))
+    await writeFile(PM_CONFIG_FILE_PATH, JSON.stringify(config))
   }
 }
 
 export class PackageManager {
-  private static config = new Config()
-  constructor (public cwd: string) {}
+  private config: Config
+  public cwd: string
+
+  constructor (cwd: string) {
+    this.cwd = cwd
+    this.config = new Config()
+  }
 
   public async init () {
-    const packageJsonPath = path.join(this.cwd, PACKAGE_JSON_FILE_NAME)
-    if (await fs.exists(packageJsonPath)) {
+    const packageJsonPath = pathModule.join(this.cwd, PACKAGE_JSON_FILE_NAME)
+    if (await exists(packageJsonPath)) {
       throw Error('Project already initialized')
     }
-    await fs.writeFile(
-      packageJsonPath,
-      JSON.stringify({ name: path.basename(this.cwd), private: true })
-    )
-    await fs.mkdir(path.join(this.cwd, 'src/test'), { recursive: true })
-    await fs.mkdir(path.join(this.cwd, 'public'), { recursive: true })
+    if (!(await exists(this.cwd))) {
+      throw Error('Project path does not exist')
+    }
+    const projectName = pathModule.basename(this.cwd)
+    await writeFile(packageJsonPath, JSON.stringify({ name: projectName, private: true }))
+
+    await createDirectory(pathModule.join(this.cwd, 'src'))
+    await writeFile(pathModule.join(this.cwd, 'src/main.js'), '')
   }
 
   public install (packageName: string) {

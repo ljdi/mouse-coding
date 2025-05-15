@@ -1,12 +1,12 @@
-import { configureSingle } from '@zenfs/core'
-import { IndexedDB } from '@zenfs/dom'
+import { resolveMountConfig, configure } from '@zenfs/core'
 import type { StateCreator } from 'zustand'
 
+import { homeStorageConfig, configuration } from '@/constants/zenfs'
 import { createDirectory, createFile, removeFile, writeFile } from '@/lib/file-system'
 
 export interface FsSlice {
-  isFsInitialized: boolean
-  initializeFs: () => Promise<void>
+  isConfigured: boolean
+  configureFs: () => Promise<void>
   createFile: typeof createFile
   createDirectory: typeof createDirectory
   removeFile: typeof removeFile
@@ -14,10 +14,19 @@ export interface FsSlice {
 }
 
 export const createFsSlice: StateCreator<FsSlice> = (set) => ({
-  isFsInitialized: false,
-  initializeFs: async () => {
-    await configureSingle({ backend: IndexedDB })
-    set({ isFsInitialized: true })
+  isConfigured: false,
+  configureFs: async () => {
+    await configure(configuration)
+
+    set({ isConfigured: true })
+  },
+  resolveMountConfig: async () => {
+    console.log('Configuration:', homeStorageConfig)
+
+    const storeFs = await resolveMountConfig(homeStorageConfig)
+    console.log('storeFs', storeFs)
+
+    return storeFs
   },
   createFile,
   createDirectory,
