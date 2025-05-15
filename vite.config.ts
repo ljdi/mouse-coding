@@ -12,7 +12,7 @@ export default defineConfig({
     react({
       tsDecorators: true,
       useAtYourOwnRisk_mutateSwcOptions: (options) => {
-        console.log('options', options)
+        // console.log('options', options)
         if (!options.jsc) options.jsc = {}
         if (!options.jsc.transform) options.jsc.transform = {}
         options.jsc.transform.decoratorVersion = '2022-03'

@@ -137,7 +137,7 @@ export const ProjectCard: FC<{
 }
 
 export const Dashboard: FC = () => {
-  const isFsInitialized = useStore((state) => state.isFsInitialized)
+  const isFsInitialized = useStore((state) => state.isConfigured)
   const [projectIds, setProjectIds] = useState<string[]>([])
 
   const fetchProjectIds = useCallback(() => {

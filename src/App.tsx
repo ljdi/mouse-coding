@@ -4,11 +4,8 @@ import { createRouter, RouterProvider } from '@tanstack/react-router'
 
 import { useEffect } from 'react'
 
-import { FileSystemAction } from './constants/action'
-import { useLoading } from './hooks/use-loading'
-import { routeTree } from './routeTree.gen'
-
 import { ThemeProvider } from '@/providers/theme-provider'
+import { routeTree } from '@/routeTree.gen'
 import { useStore } from '@/store'
 
 declare module '@tanstack/react-router' {
@@ -20,19 +17,13 @@ declare module '@tanstack/react-router' {
 const router = createRouter({ routeTree })
 
 function App () {
-  const isFsInitialized = useStore((state) => state.isFsInitialized)
-  const initializeFs = useStore((state) => state.initializeFs)
-  const [initializeFsWithLoading, isLoading] = useLoading(initializeFs, FileSystemAction.INITIALIZE_FILE_SYSTEM)
-
+  const configureFs = useStore((state) => state.configureFs)
   useEffect(() => {
-    if (isFsInitialized || isLoading) {
-      return
-    }
-    initializeFsWithLoading()
-  }, [isFsInitialized, isLoading, initializeFsWithLoading])
-
+    // Configure ZenFS with the configuration
+    configureFs()
+  }, [configureFs])
   return (
-    <ThemeProvider defaultTheme='system' storageKey='vite-ui-theme'>
+    <ThemeProvider>
       <RouterProvider router={router} />
     </ThemeProvider>
   )

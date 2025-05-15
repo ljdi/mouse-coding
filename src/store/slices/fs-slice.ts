@@ -1,12 +1,12 @@
-import { configure } from '@zenfs/core'
-import { IndexedDB } from '@zenfs/dom'
+import { resolveMountConfig, configure } from '@zenfs/core'
 import type { StateCreator } from 'zustand'
 
+import { homeStorageConfig, configuration } from '@/constants/zenfs'
 import { createDirectory, createFile, removeFile, writeFile } from '@/lib/file-system'
 
 export interface FsSlice {
-  isFsInitialized: boolean
-  initializeFs: () => Promise<void>
+  isConfigured: boolean
+  configureFs: () => Promise<void>
   createFile: typeof createFile
   createDirectory: typeof createDirectory
   removeFile: typeof removeFile
@@ -14,26 +14,19 @@ export interface FsSlice {
 }
 
 export const createFsSlice: StateCreator<FsSlice> = (set) => ({
-  isFsInitialized: false,
-  initializeFs: async () => {
-    const configuration = {
-      backend: IndexedDB,
-      storeName: 'mouse-coding',
-      disableAsyncCache: true,
-    }
-    console.log('Configuration:', configuration)
-    await configure({
-      mounts: {
-        '/': configuration,
-      },
-      log: { enabled: true, level: 'debug' },
-    })
+  isConfigured: false,
+  configureFs: async () => {
+    await configure(configuration)
 
-    // const idbfs = await resolveMountConfig(configuration)
-    // // idbfs.mount
-    // console.log(idbfs)
+    set({ isConfigured: true })
+  },
+  resolveMountConfig: async () => {
+    console.log('Configuration:', homeStorageConfig)
 
-    set({ isFsInitialized: true })
+    const storeFs = await resolveMountConfig(homeStorageConfig)
+    console.log('storeFs', storeFs)
+
+    return storeFs
   },
   createFile,
   createDirectory,
